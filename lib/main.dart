@@ -129,7 +129,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: isFollowing ? Colors.green : Colors.red,
+                                  color:
+                                      isFollowing ? Colors.green : Colors.red,
                                 ),
                               ),
                               const Text('Mengikuti'),
