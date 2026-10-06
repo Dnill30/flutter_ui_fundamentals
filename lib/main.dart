@@ -60,46 +60,14 @@ class MyApp extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
 
-                      // TAHAP 6: Layout Statistik dengan Row & Column
-                      const Row(
+                      // TAHAP 6 + 8: Layout Statistik, sekarang pakai
+                      // reusable widget buildStatCard()
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                '8',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text('Widget'),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                '4',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text('Layout'),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                '1',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text('State'),
-                            ],
-                          ),
+                          buildStatCard('8', 'Widget'),
+                          buildStatCard('4', 'Layout'),
+                          buildStatCard('1', 'State'),
                         ],
                       ),
 
@@ -130,4 +98,21 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+// ----- Tahap 8: Reusable widget -----
+// Dipakai 3 kali di atas (Widget, Layout, State) dengan data berbeda,
+// supaya tidak menulis ulang Column(Text, Text) tiga kali.
+Widget buildStatCard(String value, String label) {
+  return Expanded(
+    child: Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        Text(label),
+      ],
+    ),
+  );
 }
