@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -7,6 +6,7 @@ void main() {
   runApp(const MyApp());
 }
 
+// // Tahap 13: Fungsi Asinkron Load Data Asset JSON
 Future<Map<String, dynamic>> loadStudentData() async {
   final jsonString = await rootBundle.loadString(
     'assets/data/student_data.json',
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
-                        'assets/images/profile.png', // sesuaikan ekstensi
+                        'assets/images/profile.png',
                         width: 120,
                         height: 120,
                         errorBuilder: (context, error, stackTrace) {
@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
                         child: const Text('Lihat Daftar Materi'),
                       ),
 
-                      // Tahap 13
+                      // // Tahap 13: Tombol Navigasi ke Learning Dashboard
                       const SizedBox(height: 12),
                       ElevatedButton(
                         onPressed: () {
@@ -267,7 +267,7 @@ class TopicListPage extends StatelessWidget {
   }
 }
 
-// Tahap 13
+// // Tahap 13: Dashboard Screen dengan FutureBuilder & Integrasi Data JSON
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -287,7 +287,11 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Learning Dashboard')),
+      appBar: AppBar(
+        title: const Text('Learning Dashboard'),
+        backgroundColor: Colors.blue,
+        centerTitle: true,
+      ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: studentFuture,
         builder: (context, snapshot) {
@@ -304,25 +308,72 @@ class _DashboardPageState extends State<DashboardPage> {
           final student = data['student'] as Map<String, dynamic>;
           final courses = data['courses'] as List<dynamic>;
 
-          return Column(
-            children: [
-              ListTile(
-                title: Text(student['name'] as String),
-                subtitle: Text(student['nim'] as String),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final course = courses[index] as Map<String, dynamic>;
-                    return ListTile(
-                      title: Text(course['title'] as String),
-                      subtitle: Text(course['code'] as String),
-                    );
-                  },
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  elevation: 2,
+                  color: Colors.blue.shade50,
+                  child: ListTile(
+                    leading: const CircleAvatar(
+                      child: Icon(Icons.person),
+                    ),
+                    title: Text(
+                      student['name'] as String,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      'NIM: ${student['nim']} | ${student['class']} (${student['program']})',
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                const Text(
+                  'Daftar Matakuliah:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) {
+                      final course = courses[index] as Map<String, dynamic>;
+                      final bool isDone = course['status'] == 'done';
+                      final bool isActive = course['status'] == 'active';
+
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          leading: Icon(
+                            isDone
+                                ? Icons.check_circle
+                                : (isActive ? Icons.play_circle_fill : Icons.hourglass_empty),
+                            color: isDone
+                                ? Colors.green
+                                : (isActive ? Colors.blue : Colors.grey),
+                          ),
+                          title: Text(course['title'] as String),
+                          subtitle: Text(
+                            'Kode: ${course['code']} | SKS: ${course['credits']}',
+                          ),
+                          trailing: Chip(
+                            label: Text(
+                              course['status'].toString().toUpperCase(),
+                              style: const TextStyle(fontSize: 10, color: Colors.white),
+                            ),
+                            backgroundColor: isDone
+                                ? Colors.green
+                                : (isActive ? Colors.blue : Colors.orange),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
