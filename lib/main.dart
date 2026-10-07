@@ -81,10 +81,22 @@ class MyApp extends StatelessWidget {
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
-
-                      // Tahap 9
                       const SizedBox(height: 20),
                       const GreetingCard(),
+
+                      // Tahap 10
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TopicListPage(),
+                            ),
+                          );
+                        },
+                        child: const Text('Lihat Daftar Materi'),
+                      ),
                     ],
                   ),
                 ),
@@ -111,7 +123,6 @@ Widget buildStatCard(String value, String label) {
   );
 }
 
-// Tahap 9
 class GreetingCard extends StatefulWidget {
   const GreetingCard({super.key});
 
@@ -161,6 +172,61 @@ class _GreetingCardState extends State<GreetingCard> {
         const SizedBox(height: 8),
         Text(message),
       ],
+    );
+  }
+}
+
+// Tahap 10
+final List<Map<String, dynamic>> topics = [
+  {'title': 'Git & GitHub', 'subtitle': 'Version control', 'done': true},
+  {'title': 'Dart Fundamentals', 'subtitle': 'Language basics', 'done': true},
+  {
+    'title': 'Flutter UI Fundamentals',
+    'subtitle': 'Widgets & layout',
+    'done': false,
+  },
+  {
+    'title': '2415051049 - Achmad Dhanil Ahkam',
+    'subtitle': 'Pemilik aplikasi',
+    'done': false,
+  },
+];
+
+class TopicListPage extends StatelessWidget {
+  const TopicListPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Daftar Materi')),
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(12),
+            child: Text(
+              '2415051049 - Achmad Dhanil Ahkam',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: topics.length,
+              itemBuilder: (context, index) {
+                final item = topics[index];
+                return ListTile(
+                  leading: Icon(
+                    item['done'] == true
+                        ? Icons.check_circle
+                        : Icons.circle_outlined,
+                  ),
+                  title: Text(item['title'] as String),
+                  subtitle: Text(item['subtitle'] as String),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
