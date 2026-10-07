@@ -1,4 +1,5 @@
-import 'dart0:convert';
+// Tahap 15: Debugging Challenge
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -7,6 +8,7 @@ void main() {
 }
 
 Future<Map<String, dynamic>> loadStudentData() async {
+  // Untuk menguji Kasus C (Error State), ubah sementara path di bawah ini menjadi nama file yang salah
   final jsonString = await rootBundle.loadString(
     'assets/data/student_data.json',
   );
@@ -48,6 +50,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    const String studentId = '2415051049';
+    const String studentName = 'Achmad Dhanil Ahkam';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Learning Dashboard'),
@@ -59,13 +64,29 @@ class _DashboardPageState extends State<DashboardPage> {
         child: FutureBuilder<Map<String, dynamic>>(
           future: studentFuture,
           builder: (context, snapshot) {
+            // Loading State
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
 
+            // Error State (Pengujian Kasus C)
             if (snapshot.hasError) {
               return Center(
-                child: Text('Gagal memuat data: ${snapshot.error}'),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Error Memuat JSON:\n${snapshot.error}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
               );
             }
 
@@ -87,6 +108,27 @@ class _DashboardPageState extends State<DashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // DEMO PERBAIKAN KASUS A (RenderFlex Overflow Solved with Expanded)
+                  Card(
+                    color: Colors.amber.shade100,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.bug_report, color: Colors.amber),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              '$studentId - $studentName - Solved: Expanded dipasang pada Row untuk mencegah RenderFlex Overflow.',
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
                   ProfileIdentityCard(student: student),
                   const SizedBox(height: 12),
                   Row(
