@@ -83,8 +83,6 @@ class MyApp extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       const GreetingCard(),
-
-                      // Tahap 10
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
@@ -176,7 +174,6 @@ class _GreetingCardState extends State<GreetingCard> {
   }
 }
 
-// Tahap 10
 final List<Map<String, dynamic>> topics = [
   {'title': 'Git & GitHub', 'subtitle': 'Version control', 'done': true},
   {'title': 'Dart Fundamentals', 'subtitle': 'Language basics', 'done': true},
@@ -197,6 +194,9 @@ class TopicListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Tahap 11: hitung ringkasan
+    final int completed = topics.where((item) => item['done'] == true).length;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Daftar Materi')),
       body: Column(
@@ -208,19 +208,33 @@ class TopicListPage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
+          // Tahap 11: teks ringkasan
+          Text('$completed dari ${topics.length} topik selesai'),
+          const SizedBox(height: 8),
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
               itemCount: topics.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 4),
               itemBuilder: (context, index) {
                 final item = topics[index];
-                return ListTile(
-                  leading: Icon(
-                    item['done'] == true
-                        ? Icons.check_circle
-                        : Icons.circle_outlined,
+                final bool done = item['done'] == true;
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ListTile(
+                    leading: Icon(
+                      done ? Icons.check_circle : Icons.schedule,
+                      color: done ? Colors.green : Colors.orange,
+                    ),
+                    title: Text(item['title'] as String),
+                    subtitle: Text(item['subtitle'] as String),
+                    trailing: Text(
+                      done ? 'Selesai' : 'Belum',
+                      style: TextStyle(
+                        color: done ? Colors.green : Colors.orange,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                  title: Text(item['title'] as String),
-                  subtitle: Text(item['subtitle'] as String),
                 );
               },
             ),
