@@ -1,7 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 void main() {
   runApp(const MyApp());
+}
+
+Future<Map<String, dynamic>> loadStudentData() async {
+  final jsonString = await rootBundle.loadString(
+    'assets/data/student_data.json',
+  );
+  return jsonDecode(jsonString) as Map<String, dynamic>;
 }
 
 class MyApp extends StatelessWidget {
@@ -94,6 +104,20 @@ class MyApp extends StatelessWidget {
                           );
                         },
                         child: const Text('Lihat Daftar Materi'),
+                      ),
+
+                      // Tahap 13
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DashboardPage(),
+                            ),
+                          );
+                        },
+                        child: const Text('Lihat Learning Dashboard'),
                       ),
                     ],
                   ),
@@ -194,7 +218,6 @@ class TopicListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Tahap 11: hitung ringkasan
     final int completed = topics.where((item) => item['done'] == true).length;
 
     return Scaffold(
@@ -208,7 +231,6 @@ class TopicListPage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          // Tahap 11: teks ringkasan
           Text('$completed dari ${topics.length} topik selesai'),
           const SizedBox(height: 8),
           Expanded(
@@ -240,6 +262,69 @@ class TopicListPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Tahap 13
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  late Future<Map<String, dynamic>> studentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    studentFuture = loadStudentData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Learning Dashboard')),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: studentFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Gagal memuat data: ${snapshot.error}'),
+            );
+          }
+
+          final data = snapshot.data!;
+          final student = data['student'] as Map<String, dynamic>;
+          final courses = data['courses'] as List<dynamic>;
+
+          return Column(
+            children: [
+              ListTile(
+                title: Text(student['name'] as String),
+                subtitle: Text(student['nim'] as String),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: courses.length,
+                  itemBuilder: (context, index) {
+                    final course = courses[index] as Map<String, dynamic>;
+                    return ListTile(
+                      title: Text(course['title'] as String),
+                      subtitle: Text(course['code'] as String),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
