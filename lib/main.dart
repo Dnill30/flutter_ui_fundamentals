@@ -20,9 +20,8 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16), // Tahap 7: Padding
+              padding: const EdgeInsets.all(16),
               child: Card(
-                // Tahap 7: Card
                 elevation: 4,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Display Asset Image dari Tahap 5
                       Image.asset(
                         'assets/images/profile.png', // sesuaikan ekstensi
                         width: 120,
@@ -59,9 +57,6 @@ class MyApp extends StatelessWidget {
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                       const SizedBox(height: 24),
-
-                      // TAHAP 6 + 8: Layout Statistik, sekarang pakai
-                      // reusable widget buildStatCard()
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -70,8 +65,6 @@ class MyApp extends StatelessWidget {
                           buildStatCard('1', 'State'),
                         ],
                       ),
-
-                      // ----- Tahap 7: Container + BoxDecoration -----
                       const SizedBox(height: 20),
                       Container(
                         width: double.infinity,
@@ -88,6 +81,10 @@ class MyApp extends StatelessWidget {
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
+
+                      // Tahap 9
+                      const SizedBox(height: 20),
+                      const GreetingCard(),
                     ],
                   ),
                 ),
@@ -100,9 +97,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ----- Tahap 8: Reusable widget -----
-// Dipakai 3 kali di atas (Widget, Layout, State) dengan data berbeda,
-// supaya tidak menulis ulang Column(Text, Text) tiga kali.
 Widget buildStatCard(String value, String label) {
   return Expanded(
     child: Column(
@@ -115,4 +109,58 @@ Widget buildStatCard(String value, String label) {
       ],
     ),
   );
+}
+
+// Tahap 9
+class GreetingCard extends StatefulWidget {
+  const GreetingCard({super.key});
+
+  @override
+  State<GreetingCard> createState() => _GreetingCardState();
+}
+
+class _GreetingCardState extends State<GreetingCard> {
+  final TextEditingController controller = TextEditingController();
+  String message = 'Belum ada pesan';
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _showMessage() {
+    setState(() {
+      message = controller.text.trim().isEmpty
+          ? 'Input masih kosong'
+          : controller.text.trim();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text(
+          '2415051049 - Achmad Dhanil Ahkam',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Tulis pesan di sini',
+          ),
+        ),
+        const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: _showMessage,
+          child: const Text('Tampilkan'),
+        ),
+        const SizedBox(height: 8),
+        Text(message),
+      ],
+    );
+  }
 }
