@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart0:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -6,7 +6,6 @@ void main() {
   runApp(const MyApp());
 }
 
-// // Tahap 13: Fungsi Asinkron Load Data Asset JSON
 Future<Map<String, dynamic>> loadStudentData() async {
   final jsonString = await rootBundle.loadString(
     'assets/data/student_data.json',
@@ -21,253 +20,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter UI Fundamentals'),
-          backgroundColor: Colors.blue,
-          centerTitle: true,
-        ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/profile.png',
-                        width: 120,
-                        height: 120,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.person,
-                            size: 100,
-                            color: Colors.blue,
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Achmad Dhanil Ahkam',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'NIM: 2415051049',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          buildStatCard('8', 'Widget'),
-                          buildStatCard('4', 'Layout'),
-                          buildStatCard('1', 'State'),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.blue),
-                        ),
-                        child: const Text(
-                          'Ringkasan: 2415051049 - Achmad Dhanil Ahkam\n'
-                          'Flutter UI Fundamentals',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const GreetingCard(),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const TopicListPage(),
-                            ),
-                          );
-                        },
-                        child: const Text('Lihat Daftar Materi'),
-                      ),
-
-                      // // Tahap 13: Tombol Navigasi ke Learning Dashboard
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const DashboardPage(),
-                            ),
-                          );
-                        },
-                        child: const Text('Lihat Learning Dashboard'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+      title: 'Learning Dashboard',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
+      home: const DashboardPage(),
     );
   }
 }
 
-Widget buildStatCard(String value, String label) {
-  return Expanded(
-    child: Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        Text(label),
-      ],
-    ),
-  );
-}
-
-class GreetingCard extends StatefulWidget {
-  const GreetingCard({super.key});
-
-  @override
-  State<GreetingCard> createState() => _GreetingCardState();
-}
-
-class _GreetingCardState extends State<GreetingCard> {
-  final TextEditingController controller = TextEditingController();
-  String message = 'Belum ada pesan';
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  void _showMessage() {
-    setState(() {
-      message = controller.text.trim().isEmpty
-          ? 'Input masih kosong'
-          : controller.text.trim();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text(
-          '2415051049 - Achmad Dhanil Ahkam',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Tulis pesan di sini',
-          ),
-        ),
-        const SizedBox(height: 8),
-        ElevatedButton(
-          onPressed: _showMessage,
-          child: const Text('Tampilkan'),
-        ),
-        const SizedBox(height: 8),
-        Text(message),
-      ],
-    );
-  }
-}
-
-final List<Map<String, dynamic>> topics = [
-  {'title': 'Git & GitHub', 'subtitle': 'Version control', 'done': true},
-  {'title': 'Dart Fundamentals', 'subtitle': 'Language basics', 'done': true},
-  {
-    'title': 'Flutter UI Fundamentals',
-    'subtitle': 'Widgets & layout',
-    'done': false,
-  },
-  {
-    'title': '2415051049 - Achmad Dhanil Ahkam',
-    'subtitle': 'Pemilik aplikasi',
-    'done': false,
-  },
-];
-
-class TopicListPage extends StatelessWidget {
-  const TopicListPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final int completed = topics.where((item) => item['done'] == true).length;
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Daftar Materi')),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(12),
-            child: Text(
-              '2415051049 - Achmad Dhanil Ahkam',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Text('$completed dari ${topics.length} topik selesai'),
-          const SizedBox(height: 8),
-          Expanded(
-            child: ListView.separated(
-              itemCount: topics.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 4),
-              itemBuilder: (context, index) {
-                final item = topics[index];
-                final bool done = item['done'] == true;
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  child: ListTile(
-                    leading: Icon(
-                      done ? Icons.check_circle : Icons.schedule,
-                      color: done ? Colors.green : Colors.orange,
-                    ),
-                    title: Text(item['title'] as String),
-                    subtitle: Text(item['subtitle'] as String),
-                    trailing: Text(
-                      done ? 'Selesai' : 'Belum',
-                      style: TextStyle(
-                        color: done ? Colors.green : Colors.orange,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// // Tahap 13: Dashboard Screen dengan FutureBuilder & Integrasi Data JSON
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -290,92 +52,204 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
         title: const Text('Learning Dashboard'),
         backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         centerTitle: true,
       ),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: studentFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Gagal memuat data: ${snapshot.error}'),
+      body: SafeArea(
+        child: FutureBuilder<Map<String, dynamic>>(
+          future: studentFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Gagal memuat data: ${snapshot.error}'),
+              );
+            }
+
+            if (!snapshot.hasData) {
+              return const Center(child: Text('Data tidak ditemukan'));
+            }
+
+            final data = snapshot.data!;
+            final student = data['student'] as Map<String, dynamic>;
+            final courses = data['courses'] as List<dynamic>;
+
+            final int totalSks = courses.fold<int>(
+              0,
+              (sum, item) => sum + (item['credits'] as int),
             );
-          }
 
-          final data = snapshot.data!;
-          final student = data['student'] as Map<String, dynamic>;
-          final courses = data['courses'] as List<dynamic>;
-
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                  elevation: 2,
-                  color: Colors.blue.shade50,
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.person),
-                    ),
-                    title: Text(
-                      student['name'] as String,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      'NIM: ${student['nim']} | ${student['class']} (${student['program']})',
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ProfileIdentityCard(student: student),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      SummaryCard(
+                        title: 'Total Matakuliah',
+                        value: '${courses.length} MK',
+                        icon: Icons.book,
+                        color: Colors.blue.shade100,
+                      ),
+                      const SizedBox(width: 8),
+                      SummaryCard(
+                        title: 'Total SKS',
+                        value: '$totalSks SKS',
+                        icon: Icons.credit_score,
+                        color: Colors.green.shade100,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Daftar Matakuliah:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Daftar Matakuliah:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: courses.length,
-                    itemBuilder: (context, index) {
-                      final course = courses[index] as Map<String, dynamic>;
-                      final bool isDone = course['status'] == 'done';
-                      final bool isActive = course['status'] == 'active';
-
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        child: ListTile(
-                          leading: Icon(
-                            isDone
-                                ? Icons.check_circle
-                                : (isActive ? Icons.play_circle_fill : Icons.hourglass_empty),
-                            color: isDone
-                                ? Colors.green
-                                : (isActive ? Colors.blue : Colors.grey),
-                          ),
-                          title: Text(course['title'] as String),
-                          subtitle: Text(
-                            'Kode: ${course['code']} | SKS: ${course['credits']}',
-                          ),
-                          trailing: Chip(
-                            label: Text(
-                              course['status'].toString().toUpperCase(),
-                              style: const TextStyle(fontSize: 10, color: Colors.white),
-                            ),
-                            backgroundColor: isDone
-                                ? Colors.green
-                                : (isActive ? Colors.blue : Colors.orange),
-                          ),
-                        ),
-                      );
-                    },
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: courses.length,
+                      itemBuilder: (context, index) {
+                        final course = courses[index] as Map<String, dynamic>;
+                        return CourseItemCard(course: course);
+                      },
+                    ),
                   ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileIdentityCard extends StatelessWidget {
+  final Map<String, dynamic> student;
+
+  const ProfileIdentityCard({super.key, required this.student});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      color: Colors.blue.shade50,
+      child: ListTile(
+        leading: const CircleAvatar(
+          backgroundColor: Colors.blue,
+          child: Icon(Icons.person, color: Colors.white),
+        ),
+        title: Text(
+          student['name'] as String? ?? 'Nama Mahasiswa',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        subtitle: Text(
+          'NIM: ${student['nim']} | ${student['class'] ?? ''}\n${student['program'] ?? ''}',
+        ),
+      ),
+    );
+  }
+}
+
+class SummaryCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const SummaryCard({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Card(
+        color: color,
+        elevation: 1,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Column(
+            children: [
+              Icon(icon, size: 28, color: Colors.black87),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
-              ],
-            ),
-          );
-        },
+              ),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CourseItemCard extends StatelessWidget {
+  final Map<String, dynamic> course;
+
+  const CourseItemCard({super.key, required this.course});
+
+  @override
+  Widget build(BuildContext context) {
+    final String status = course['status'] as String? ?? 'upcoming';
+    final bool isDone = status == 'done';
+    final bool isActive = status == 'active';
+
+    Color statusColor = Colors.orange;
+    IconData statusIcon = Icons.hourglass_empty;
+
+    if (isDone) {
+      statusColor = Colors.green;
+      statusIcon = Icons.check_circle;
+    } else if (isActive) {
+      statusColor = Colors.blue;
+      statusIcon = Icons.play_circle_fill;
+    }
+
+    final String dosen = course['dosen'] as String? ?? '-';
+
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        leading: Icon(statusIcon, color: statusColor, size: 30),
+        title: Text(
+          course['title'] as String? ?? 'Matakuliah',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          'Kode: ${course['code']} | SKS: ${course['credits']}\n'
+          'Dosen: $dosen',
+        ),
+        isThreeLine: true,
+        trailing: Chip(
+          label: Text(
+            status.toUpperCase(),
+            style: const TextStyle(fontSize: 10, color: Colors.white),
+          ),
+          backgroundColor: statusColor,
+        ),
       ),
     );
   }
