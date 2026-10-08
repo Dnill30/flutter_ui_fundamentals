@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Identitas Mahasiswa
+
 const String studentName = 'Achmad Dhanil Ahkam';
 const String studentId = '2415051049';
 
