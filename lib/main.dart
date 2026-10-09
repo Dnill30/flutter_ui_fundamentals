@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart' show rootBundle;
 
 const String studentName = 'Achmad Dhanil Ahkam';
 const String studentId = '2415051049';
@@ -15,110 +16,105 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Tahap 2: MediaQuery',
+      title: 'Pertemuan 5: Responsive & Navigation',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
       ),
-      home: const MediaQueryDemoPage(),
+      home: const DashboardPage(),
     );
   }
 }
 
-class MediaQueryDemoPage extends StatelessWidget {
-  const MediaQueryDemoPage({super.key});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  Map<String, dynamic>? studentData;
+  List<dynamic> materiList = [];
+  bool isLoading = true;
+  String? errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final jsonString = await rootBundle.loadString('assets/data/student_data.json');
+      final data = jsonDecode(jsonString) as Map<String, dynamic>;
+      setState(() {
+        studentData = data['student'] as Map<String, dynamic>?;
+        materiList = (data['materi'] ?? data['courses'] ?? []) as List<dynamic>;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Membaca informasi layar menggunakan MediaQuery
-    final size = MediaQuery.of(context).size;
-    final orientation = MediaQuery.of(context).orientation;
-    final isCompact = size.width < 600;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tahap 2: MediaQuery'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Tahap 0: Environment Review'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Identitas
-                  Text(
-                    studentName,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'NIM: $studentId',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                  const Divider(height: 24),
-
-                  // Informasi Karakteristik Layar dari MediaQuery
-                  Text(
-                    'Width: ${size.width.toStringAsFixed(1)} px',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Height: ${size.height.toStringAsFixed(1)} px',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Orientation: ${orientation.name.toUpperCase()}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Kondisi Kategori Layar (Compact vs Wide)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isCompact
-                          ? Colors.orange.shade100
-                          : Colors.teal.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: isCompact ? Colors.orange : Colors.teal,
+      body: SafeArea(
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : errorMessage != null
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'Gagal memuat data: $errorMessage',
+                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    child: Text(
-                      'Layout Category: ${isCompact ? "Compact (< 600px)" : "Wide (>= 600px)"}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isCompact
-                            ? Colors.orange.shade900
-                            : Colors.teal.shade900,
-                      ),
+                  )
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blue),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                studentName,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text('NIM: $studentId', style: const TextStyle(fontSize: 14)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Environment & Project Siap untuk Pertemuan 5!',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
