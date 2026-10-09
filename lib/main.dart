@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Pertemuan 5: Responsive & Navigation',
+      title: 'Pertemuan 5 - Modul Praktikum',
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: Colors.white,
@@ -35,9 +35,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   Map<String, dynamic>? studentData;
-  List<dynamic> materiList = [];
   bool isLoading = true;
-  String? errorMessage;
 
   @override
   void initState() {
@@ -51,12 +49,10 @@ class _DashboardPageState extends State<DashboardPage> {
       final data = jsonDecode(jsonString) as Map<String, dynamic>;
       setState(() {
         studentData = data['student'] as Map<String, dynamic>?;
-        materiList = (data['materi'] ?? data['courses'] ?? []) as List<dynamic>;
         isLoading = false;
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
-        errorMessage = e.toString();
         isLoading = false;
       });
     }
@@ -64,57 +60,88 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final nim = studentData?['nim'] ?? studentId;
+    final nama = studentData?['nama'] ?? studentName;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tahap 0: Environment Review'),
-        backgroundColor: Colors.blue,
+        title: const Text('Learning Dashboard'),
+        backgroundColor: Colors.blue.shade700,
         foregroundColor: Colors.white,
       ),
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
-            : errorMessage != null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        'Gagal memuat data: $errorMessage',
-                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Student Info Card
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF0F7FF),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFD0E3FF)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'NIM: $nim',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0D3C75),
+                            ),
+                          ),
+                          Text('Nama: $nama', style: const TextStyle(color: Color(0xFF0D3C75))),
+                        ],
                       ),
                     ),
-                  )
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade50,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.blue),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                studentName,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              Text('NIM: $studentId', style: const TextStyle(fontSize: 14)),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Environment & Project Siap untuk Pertemuan 5!',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    const SizedBox(height: 20),
+
+                    // Tombol Navigasi Tahap 1
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.warning_amber_rounded),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ResponsiveProblemPage(),
+                            ),
+                          );
+                        },
+                        label: const Text('Tahap 1: Responsive Problem'),
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+              ),
+      ),
+    );
+  }
+}
+
+// Tahap 1 (Pertemuan 5) - Di Bagian Bawah File
+
+class ResponsiveProblemPage extends StatelessWidget {
+  const ResponsiveProblemPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Responsive Problem')),
+      body: Center(
+        child: Container(
+          width: double.infinity, 
+          padding: const EdgeInsets.all(16),
+          color: Colors.blue.shade50,
+          child: const Text('$studentId - $studentName'),
+        ),
       ),
     );
   }
