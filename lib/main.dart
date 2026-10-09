@@ -147,6 +147,47 @@ class ResponsiveProblemPage extends StatelessWidget {
   }
 }
 
+class MediaQueryDemoPage extends StatelessWidget {
+  const MediaQueryDemoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final orientation = MediaQuery.of(context).orientation;
+    final String category = size.width < 600 ? 'Compact' : 'Wide';
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tahap 2: MediaQuery')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '$studentId - $studentName',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Text('Width: ${size.width.toStringAsFixed(0)}'),
+              Text('Height: ${size.height.toStringAsFixed(0)}'),
+              Text('Orientation: $orientation'),
+              const SizedBox(height: 8),
+              Text(
+                'Kategori: $category',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CompactLayout extends StatelessWidget {
   const CompactLayout({super.key});
 
@@ -253,6 +294,98 @@ class BreakpointDemoPage extends StatelessWidget {
             return const ExpandedLayout();
           }
         },
+      ),
+    );
+  }
+}
+
+class FlexibleDemoPage extends StatelessWidget {
+  const FlexibleDemoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final skills = [
+      'Flutter UI',
+      'Dart Fundamental',
+      'Responsive Layout',
+      'Navigation Stack',
+      'State Management',
+      'REST API',
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tahap 4: Flexible & Wrap'),
+        backgroundColor: Colors.blue.shade700,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$studentId - $studentName',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              '1. Pembagian Ruang (Expanded Flex 2 : 1):',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'Panel A (Flex 2)\nMengambil 2/3 ruang',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'Panel B (Flex 1)\nMengambil 1/3 ruang',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              '2. Komposisi Skill Chips (Menggunakan Wrap):',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: skills
+                  .map((skill) => Chip(
+                        avatar: const Icon(Icons.check_circle, size: 18, color: Colors.blue),
+                        label: Text(skill),
+                        backgroundColor: Colors.blue.shade50,
+                      ))
+                  .toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
