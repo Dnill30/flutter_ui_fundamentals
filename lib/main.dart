@@ -146,3 +146,114 @@ class ResponsiveProblemPage extends StatelessWidget {
     );
   }
 }
+
+class CompactLayout extends StatelessWidget {
+  const CompactLayout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.red.shade50,
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      child: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$studentId - $studentName',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text('Kategori: Compact (1 kolom)'),
+          SizedBox(height: 12),
+          Icon(Icons.phone_android, size: 48, color: Colors.red),
+        ],
+      ),
+    );
+  }
+}
+
+class MediumLayout extends StatelessWidget {
+  const MediumLayout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.orange.shade50,
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.tablet, size: 48, color: Colors.orange),
+          SizedBox(width: 16),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$studentId - $studentName',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text('Kategori: Medium (2 kolom)'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ExpandedLayout extends StatelessWidget {
+  const ExpandedLayout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.green.shade50,
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      child: Row(
+        children: [
+          const Icon(Icons.desktop_windows, size: 48, color: Colors.green),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text(
+                  '$studentId - $studentName',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text('Kategori: Expanded (3 kolom, layout lebih lebar)'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BreakpointDemoPage extends StatelessWidget {
+  const BreakpointDemoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tahap 3: Breakpoint')),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 600) {
+            return const CompactLayout();
+          } else if (constraints.maxWidth < 840) {
+            return const MediumLayout();
+          } else {
+            return const ExpandedLayout();
+          }
+        },
+      ),
+    );
+  }
+}
