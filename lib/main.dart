@@ -910,3 +910,53 @@ class CourseGridPage extends StatelessWidget {
     );
   }
 }
+
+// tahap 6
+
+class ScrollDemoPage extends StatelessWidget {
+  const ScrollDemoPage({super.key});
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tahap 6: Scrollable & Keyboard')),
+      // SingleChildScrollView penting di sini supaya saat keyboard muncul
+      // (karena TextField di bawah), konten tidak overflow, bisa discroll.
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '$studentId - $studentName',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 16),
+            // Konten sengaja dibuat panjang (banyak Card) supaya tingginya
+            // melebihi layar, untuk menguji scroll.
+            for (int i = 1; i <= 8; i++)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text('Card informasi ke-$i, konten contoh.'),
+                  ),
+                ),
+              ),
+            const Text('Form di bagian bawah:'),
+            const SizedBox(height: 8),
+            const TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Ketik sesuatu (buka keyboard)',
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+}
+ 
