@@ -960,3 +960,61 @@ class ScrollDemoPage extends StatelessWidget {
   }
 }
  
+ 
+class Nav7HomePage extends StatelessWidget {
+  const Nav7HomePage({super.key});
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tahap 7: Home')),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              '$studentId - $studentName',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Nav7DetailPage()),
+                );
+              },
+              child: const Text('Buka Detail'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+ 
+class Nav7DetailPage extends StatelessWidget {
+  const Nav7DetailPage({super.key});
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // AppBar otomatis menambahkan tombol back karena halaman ini
+      // dibuka lewat Navigator.push (ada route sebelumnya di stack).
+      appBar: AppBar(title: const Text('Tahap 7: Detail')),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Halaman Detail'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Kembali (pop manual)'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
