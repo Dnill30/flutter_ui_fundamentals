@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// MENU UTAMA NAVIGASI
+//  MENU UTAMA NAVIGASI
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -97,9 +97,13 @@ class MainMenuPage extends StatelessWidget {
                   const CourseExplorerListPage()),
               _navButton(
                   context, 'Tahap 10: NavigationBar', const Stage10MainPage()),
-              const Divider(height: 24),
               _navButton(context, 'Tahap 11: NavigationRail & NavigationBar',
-                  const Stage11MainPage(),
+                  const Stage11MainPage()),
+              const Divider(height: 24),
+              _navButton(
+                  context,
+                  'Tahap 12: Button, InkWell, & GestureDetector',
+                  const Stage12MainPage(),
                   isPrimary: true),
             ],
           ),
@@ -116,10 +120,10 @@ class MainMenuPage extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isPrimary ? Colors.teal : Colors.white,
+            backgroundColor: isPrimary ? Colors.indigo : Colors.white,
             foregroundColor: isPrimary ? Colors.white : const Color(0xFF1976D2),
             side: BorderSide(
-                color: isPrimary ? Colors.teal : const Color(0xFF1976D2)),
+                color: isPrimary ? Colors.indigo : const Color(0xFF1976D2)),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
           onPressed: () => Navigator.push(
@@ -139,7 +143,7 @@ class MainMenuPage extends StatelessWidget {
   }
 }
 
-// Tahap 1: Responsive Problem
+//  Tahap 1: Responsive Problem
 
 class ResponsiveProblemPage extends StatelessWidget {
   const ResponsiveProblemPage({super.key});
@@ -191,7 +195,7 @@ class ResponsiveProblemPage extends StatelessWidget {
   }
 }
 
-// Tahap 2: MediaQuery
+//  Tahap 2: MediaQuery
 
 class MediaQueryDemoPage extends StatelessWidget {
   const MediaQueryDemoPage({super.key});
@@ -267,7 +271,7 @@ class MediaQueryDemoPage extends StatelessWidget {
   }
 }
 
-// Tahap 3: Breakpoint
+//  Tahap 3: Breakpoint
 
 class CompactLayout extends StatelessWidget {
   const CompactLayout({super.key});
@@ -410,7 +414,7 @@ class BreakpointDemoPage extends StatelessWidget {
   }
 }
 
-// Tahap 4: Expanded, Flexible, Wrap
+//  Tahap 4: Expanded, Flexible, Wrap
 
 Widget buildFlexBox(String label, Color color) {
   return Container(
@@ -509,7 +513,7 @@ class FlexWrapDemoPage extends StatelessWidget {
   }
 }
 
-// Tahap 5: GridView Responsif
+//  Tahap 5: GridView Responsif
 
 class CourseGridPage extends StatelessWidget {
   const CourseGridPage({super.key});
@@ -628,7 +632,7 @@ class CourseGridPage extends StatelessWidget {
   }
 }
 
-// Tahap 6: Scrollable Content & Keyboard
+//  Tahap 6: Scrollable Content & Keyboard
 
 class ScrollDemoPage extends StatelessWidget {
   const ScrollDemoPage({super.key});
@@ -702,7 +706,7 @@ class ScrollDemoPage extends StatelessWidget {
   }
 }
 
-// Tahap 7: Navigator push/pop
+//  Tahap 7: Navigator push/pop
 
 class Nav7HomePage extends StatelessWidget {
   const Nav7HomePage({super.key});
@@ -843,7 +847,7 @@ class Nav7DetailPage extends StatelessWidget {
   }
 }
 
-// TAHAP 8 & 9: COURSE EXPLORER LIST & DETAIL
+//  TAHAP 8 & 9: COURSE EXPLORER LIST & DETAIL
 
 class CourseExplorerListPage extends StatelessWidget {
   const CourseExplorerListPage({super.key});
@@ -1193,7 +1197,7 @@ class Stage8or9DetailPage extends StatelessWidget {
   }
 }
 
-// TAHAP 10: NAVIGATION BAR
+//  TAHAP 10: NAVIGATION BAR
 
 class Stage10MainPage extends StatefulWidget {
   const Stage10MainPage({super.key});
@@ -1244,7 +1248,7 @@ class _Stage10MainPageState extends State<Stage10MainPage> {
   }
 }
 
-// TAHAP 11: NAVIGATIONRAIL & NAVIGATIONBAR (ADAPTIVE SHELL)
+//  TAHAP 11: NAVIGATIONRAIL & NAVIGATIONBAR
 
 class Stage11MainPage extends StatefulWidget {
   const Stage11MainPage({super.key});
@@ -1254,7 +1258,6 @@ class Stage11MainPage extends StatefulWidget {
 }
 
 class _Stage11MainPageState extends State<Stage11MainPage> {
-  // Poin 4: selectedIndex disimpan pada StatefulWidget agar page aktif tetap sama saat layout berubah
   int selectedIndex = 0;
 
   final List<Widget> pages = [
@@ -1263,7 +1266,6 @@ class _Stage11MainPageState extends State<Stage11MainPage> {
     const Stage10ProfileScreen(),
   ];
 
-  // Helper Widget Poin 2: NavigationBar untuk Compact / Medium Screen (< 840 px)
   Widget buildNavigationBar() {
     return NavigationBar(
       selectedIndex: selectedIndex,
@@ -1287,7 +1289,6 @@ class _Stage11MainPageState extends State<Stage11MainPage> {
     );
   }
 
-  // Helper Widget Poin 3: NavigationRail untuk Expanded Screen (>= 840 px)
   Widget buildNavigationRail() {
     return NavigationRail(
       selectedIndex: selectedIndex,
@@ -1331,10 +1332,8 @@ class _Stage11MainPageState extends State<Stage11MainPage> {
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
       ),
-      // Poin 1: Menggunakan LayoutBuilder pada Shell Aplikasi
       body: LayoutBuilder(
         builder: (context, constraints) {
-          // Poin 2: Tampilkan NavigationBar jika lebar < 840 px (Compact/Medium)
           if (constraints.maxWidth < 840) {
             return Scaffold(
               body: pages[selectedIndex],
@@ -1342,7 +1341,6 @@ class _Stage11MainPageState extends State<Stage11MainPage> {
             );
           }
 
-          // Poin 3: Tampilkan NavigationRail jika lebar >= 840 px (Expanded)
           return Scaffold(
             body: Row(
               children: [
@@ -1358,7 +1356,7 @@ class _Stage11MainPageState extends State<Stage11MainPage> {
   }
 }
 
-// Sub-Screens untuk Tahap 10 & 11
+// Sub-Screens untuk Tahap 10, 11, & 12
 class Stage10HomeScreen extends StatelessWidget {
   const Stage10HomeScreen({super.key});
 
@@ -1430,7 +1428,7 @@ class Stage10HomeScreen extends StatelessWidget {
               leading: CircleAvatar(
                 backgroundColor: Colors.teal,
                 foregroundColor: Colors.white,
-                child: Icon(Icons.devices),
+                child: Icon(Icons.devices_other),
               ),
               title: Text(
                 'Status Adaptive Layout',
@@ -1517,8 +1515,8 @@ class Stage10CoursesScreen extends StatelessWidget {
                 Card(
                   child: ListTile(
                     leading: Icon(Icons.touch_app, color: Colors.green),
-                    title: Text('Interaction & State'),
-                    subtitle: Text('MOB06 • Status: Planned'),
+                    title: Text('Interaction & Gesture'),
+                    subtitle: Text('MOB06 • Status: Active'),
                   ),
                 ),
               ],
@@ -1568,7 +1566,8 @@ class Stage10ProfileScreen extends StatelessWidget {
           const ListTile(
             leading: Icon(Icons.menu_book, color: Colors.teal),
             title: Text('Modul'),
-            subtitle: Text('Modul 5: Adaptive Navigation Shell (Tahap 11)'),
+            subtitle:
+                Text('Modul 5: Button, InkWell & GestureDetector (Tahap 12)'),
           ),
           const ListTile(
             leading: Icon(Icons.check_circle, color: Colors.green),
@@ -1576,6 +1575,266 @@ class Stage10ProfileScreen extends StatelessWidget {
             subtitle: Text('100% Seluruh Tahap Modul 5 Berhasil'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+//  TAHAP 12: BUTTON, INKWELL, DAN GESTUREDETECTOR
+
+class Stage12MainPage extends StatefulWidget {
+  const Stage12MainPage({super.key});
+
+  @override
+  State<Stage12MainPage> createState() => _Stage12MainPageState();
+}
+
+class _Stage12MainPageState extends State<Stage12MainPage> {
+  // Poin 2: State boolean untuk fitur favorite
+  bool isFavorite = false;
+
+  final Map<String, dynamic> course = const {
+    'title': 'Responsive Layout & Interaction',
+    'code': 'MOB04',
+    'credits': 3,
+    'status': 'Active',
+    'description':
+        'Mempelajari penggunaan Button, InkWell untuk efek ripple Material, dan GestureDetector untuk menangani gesture tap serta long press pada Flutter.',
+  };
+
+  // Poin 4: Dialog Informasi saat Long Press
+  void _showCourseDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(course['title'] as String),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Kode: ${course['code']}'),
+            Text('SKS: ${course['credits']} SKS'),
+            Text('Status: ${course['status']}'),
+            const Divider(),
+            Text(course['description'] as String),
+            const SizedBox(height: 12),
+            Text(
+              'Mahasiswa: $studentName ($studentId)',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.indigo,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tahap 12: Interaksi & Gesture'),
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Identitas Mahasiswa Banner
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.indigo.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.indigo),
+              ),
+              child: const Column(
+                children: [
+                  Text(
+                    studentName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.indigo,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'NIM: $studentId',
+                    style: TextStyle(fontSize: 15, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Uji Coba Gesture & InkWell Ripple:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '• Tap kartu: Mengubah status Favorite\n• Long Press kartu: Menampilkan Dialog Informasi Detail',
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+            ),
+            const SizedBox(height: 16),
+
+            // Poin 1 & 4: Material + InkWell (onTap & onLongPress)
+            Material(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              elevation: 4,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                // Poin 1: Aksi tap pada CourseCard
+                onTap: () {
+                  setState(() {
+                    isFavorite = !isFavorite;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isFavorite
+                            ? 'Course ditambahkan ke Favorite!'
+                            : 'Course dihapus dari Favorite.',
+                      ),
+                      duration: const Duration(seconds: 1),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+                // Poin 4: Gesture lain (Long Press untuk menampilkan informasi)
+                onLongPress: () {
+                  _showCourseDialog(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.indigo.shade100,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              course['code'] as String,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.indigo,
+                              ),
+                            ),
+                          ),
+                          // Poin 2 & 3: Tombol favorite dengan icon berbeda untuk aktif/nonaktif
+                          IconButton(
+                            icon: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isFavorite ? Colors.red : Colors.grey,
+                              size: 28,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isFavorite = !isFavorite;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        course['title'] as String,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${course['credits']} SKS • Status: ${course['status']}',
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                      const Divider(height: 24),
+                      Row(
+                        children: const [
+                          Icon(Icons.touch_app, size: 18, color: Colors.indigo),
+                          SizedBox(width: 6),
+                          Text(
+                            'Tap/Long Press kartu ini untuk mencoba gesture',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.indigo,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Demo GestureDetector eksplisit terpisah
+            const Text(
+              'Demo GestureDetector (Tombol Aksi Eksplisit):',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: () {
+                _showCourseDialog(context);
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.indigo,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.indigo.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      'Buka Informasi Detail (GestureDetector)',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
