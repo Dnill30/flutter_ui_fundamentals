@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//  MENU UTAMA NAVIGASI
+// ===================== MENU UTAMA NAVIGASI =====================
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -103,9 +103,13 @@ class MainMenuPage extends StatelessWidget {
                   context,
                   'Tahap 12: Button, InkWell, & GestureDetector',
                   const Stage12MainPage()),
-              const Divider(height: 24),
               _navButton(context, 'Tahap 13: Form Input dan Validasi',
-                  const Stage13MainPage(),
+                  const Stage13MainPage()),
+              const Divider(height: 24),
+              _navButton(
+                  context,
+                  'Tahap 14: SnackBar, Dialog, & Loading Feedback',
+                  const Stage14MainPage(),
                   isPrimary: true),
             ],
           ),
@@ -122,10 +126,12 @@ class MainMenuPage extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isPrimary ? Colors.deepOrange : Colors.white,
+            backgroundColor: isPrimary ? Colors.green.shade700 : Colors.white,
             foregroundColor: isPrimary ? Colors.white : const Color(0xFF1976D2),
             side: BorderSide(
-                color: isPrimary ? Colors.deepOrange : const Color(0xFF1976D2)),
+                color: isPrimary
+                    ? Colors.green.shade700
+                    : const Color(0xFF1976D2)),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
           onPressed: () => Navigator.push(
@@ -145,7 +151,7 @@ class MainMenuPage extends StatelessWidget {
   }
 }
 
-//  Tahap 1: Responsive Problem
+// ===================== Tahap 1: Responsive Problem =====================
 
 class ResponsiveProblemPage extends StatelessWidget {
   const ResponsiveProblemPage({super.key});
@@ -197,7 +203,7 @@ class ResponsiveProblemPage extends StatelessWidget {
   }
 }
 
-//  Tahap 2: MediaQuery
+// ===================== Tahap 2: MediaQuery =====================
 
 class MediaQueryDemoPage extends StatelessWidget {
   const MediaQueryDemoPage({super.key});
@@ -273,7 +279,7 @@ class MediaQueryDemoPage extends StatelessWidget {
   }
 }
 
-//  Tahap 3: Breakpoint
+// ===================== Tahap 3: Breakpoint =====================
 
 class CompactLayout extends StatelessWidget {
   const CompactLayout({super.key});
@@ -416,7 +422,7 @@ class BreakpointDemoPage extends StatelessWidget {
   }
 }
 
-//  Tahap 4: Expanded, Flexible, Wrap
+// ===================== Tahap 4: Expanded, Flexible, Wrap =====================
 
 Widget buildFlexBox(String label, Color color) {
   return Container(
@@ -515,7 +521,7 @@ class FlexWrapDemoPage extends StatelessWidget {
   }
 }
 
-//  Tahap 5: GridView Responsif
+// ===================== Tahap 5: GridView Responsif =====================
 
 class CourseGridPage extends StatelessWidget {
   const CourseGridPage({super.key});
@@ -634,7 +640,7 @@ class CourseGridPage extends StatelessWidget {
   }
 }
 
-//  Tahap 6: Scrollable Content & Keyboard
+// ===================== Tahap 6: Scrollable Content & Keyboard =====================
 
 class ScrollDemoPage extends StatelessWidget {
   const ScrollDemoPage({super.key});
@@ -708,7 +714,7 @@ class ScrollDemoPage extends StatelessWidget {
   }
 }
 
-//  Tahap 7: Navigator push/pop
+// ===================== Tahap 7: Navigator push/pop =====================
 
 class Nav7HomePage extends StatelessWidget {
   const Nav7HomePage({super.key});
@@ -849,7 +855,7 @@ class Nav7DetailPage extends StatelessWidget {
   }
 }
 
-//  TAHAP 8 & 9: COURSE EXPLORER LIST & DETAIL
+// ===================== TAHAP 8 & 9: COURSE EXPLORER LIST & DETAIL =====================
 
 class CourseExplorerListPage extends StatelessWidget {
   const CourseExplorerListPage({super.key});
@@ -1199,7 +1205,7 @@ class Stage8or9DetailPage extends StatelessWidget {
   }
 }
 
-//  TAHAP 10: NAVIGATION BAR
+// ===================== TAHAP 10: NAVIGATION BAR =====================
 
 class Stage10MainPage extends StatefulWidget {
   const Stage10MainPage({super.key});
@@ -1250,7 +1256,7 @@ class _Stage10MainPageState extends State<Stage10MainPage> {
   }
 }
 
-//  TAHAP 11: NAVIGATIONRAIL & NAVIGATIONBAR
+// ===================== TAHAP 11: NAVIGATIONRAIL & NAVIGATIONBAR =====================
 
 class Stage11MainPage extends StatefulWidget {
   const Stage11MainPage({super.key});
@@ -1425,18 +1431,18 @@ class Stage10HomeScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const ListTile(
-              contentPadding: EdgeInsets.all(16),
-              leading: CircleAvatar(
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(16),
+              leading: const CircleAvatar(
                 backgroundColor: Colors.teal,
                 foregroundColor: Colors.white,
-                child: Icon(Icons.devices),
+                child: Icon(Icons.devices_other),
               ),
-              title: Text(
+              title: const Text(
                 'Status Adaptive Layout',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(
+              subtitle: const Text(
                 'LayoutBuilder mengaktifkan NavigationBar (< 840px) & NavigationRail (>= 840px).',
               ),
             ),
@@ -1582,7 +1588,7 @@ class Stage10ProfileScreen extends StatelessWidget {
   }
 }
 
-//  TAHAP 12: BUTTON, INKWELL, DAN GESTUREDETECTOR
+// ===================== TAHAP 12: BUTTON, INKWELL, DAN GESTUREDETECTOR =====================
 
 class Stage12MainPage extends StatefulWidget {
   const Stage12MainPage({super.key});
@@ -1832,7 +1838,7 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
   }
 }
 
-//  TAHAP 13: FORM INPUT DAN VALIDASI
+// ===================== TAHAP 13: FORM INPUT DAN VALIDASI =====================
 
 class Stage13MainPage extends StatefulWidget {
   const Stage13MainPage({super.key});
@@ -1842,10 +1848,8 @@ class Stage13MainPage extends StatefulWidget {
 }
 
 class _Stage13MainPageState extends State<Stage13MainPage> {
-  // Poin 4: Form + GlobalKey<FormState>
   final _formKey = GlobalKey<FormState>();
 
-  // Poin 2: Nama dan NIM terisi default dari konstanta
   late TextEditingController _nameController;
   late TextEditingController _idController;
   final TextEditingController _commentController = TextEditingController();
@@ -1867,7 +1871,6 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
     super.dispose();
   }
 
-  // Poin 4: Validasi form sebelum menampilkan hasil
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -1901,7 +1904,6 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Poin 1: Form Feedback sederhana (Form + GlobalKey)
             Form(
               key: _formKey,
               child: Card(
@@ -1923,8 +1925,6 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // Field Nama
                       TextFormField(
                         controller: _nameController,
                         decoration: const InputDecoration(
@@ -1940,8 +1940,6 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
                         },
                       ),
                       const SizedBox(height: 16),
-
-                      // Field NIM
                       TextFormField(
                         controller: _idController,
                         decoration: const InputDecoration(
@@ -1957,8 +1955,262 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _commentController,
+                        maxLines: 3,
+                        decoration: const InputDecoration(
+                          labelText: 'Komentar / Masukan',
+                          hintText: 'Tuliskan masukan Anda...',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.comment),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Komentar wajib diisi';
+                          }
+                          if (value.trim().length < 5) {
+                            return 'Komentar wajib diisi minimal 5 karakter';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepOrange,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          onPressed: _submitForm,
+                          icon: const Icon(Icons.send),
+                          label: const Text('Kirim Feedback'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (_submittedData != null) ...[
+              const SizedBox(height: 24),
+              Card(
+                color: Colors.green.shade50,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(color: Colors.green.shade400, width: 1.5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(Icons.check_circle, color: Colors.green),
+                          SizedBox(width: 8),
+                          Text(
+                            'Hasil Feedback Terverifikasi:',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 20),
+                      Text(
+                        'Nama: ${_submittedData!['name']}',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'NIM: ${_submittedData!['id']}',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Komentar:\n"${_submittedData!['comment']}"',
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-                      // Poin 3: Field Komentar wajib minimal 5 karakter
+// ===================== TAHAP 14: SNACKBAR, DIALOG, DAN LOADING FEEDBACK =====================
+
+class Stage14MainPage extends StatefulWidget {
+  const Stage14MainPage({super.key});
+
+  @override
+  State<Stage14MainPage> createState() => _Stage14MainPageState();
+}
+
+class _Stage14MainPageState extends State<Stage14MainPage> {
+  // Poin 1 & 3: GlobalKey FormState & State Loading
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+
+  late TextEditingController _nameController;
+  late TextEditingController _idController;
+  final TextEditingController _commentController = TextEditingController();
+
+  Map<String, String>? _submittedData;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: studentName);
+    _idController = TextEditingController(text: studentId);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _idController.dispose();
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  // Poin 2: Aksi penting dengan AlertDialog Konfirmasi sebelum diproses
+  Future<void> _processFormWithConfirmation() async {
+    // 1. Validasi Form
+    if (!_formKey.currentState!.validate()) return;
+
+    // Poin 2: Menampilkan AlertDialog Konfirmasi
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Konfirmasi Pengiriman'),
+        content: const Text(
+            'Apakah Anda yakin data feedback sudah sesuai dan ingin dikirim?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green.shade700,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Ya, Kirim'),
+          ),
+        ],
+      ),
+    );
+
+    // Jika pengguna membatalkan dialog
+    if (confirmed != true) return;
+
+    // Poin 3: Simulasi Loading dengan CircularProgressIndicator (delay 2 detik)
+    setState(() {
+      _isLoading = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+      _submittedData = {
+        'name': _nameController.text.trim(),
+        'id': _idController.text.trim(),
+        'comment': _commentController.text.trim(),
+      };
+    });
+
+    // Poin 1: Menampilkan SnackBar setelah form valid & proses loading selesai
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Feedback dari ${nameControlText()} berhasil disimpan dan terkirim!',
+        ),
+        backgroundColor: Colors.green.shade700,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  String nameControlText() => _nameController.text.trim();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tahap 14: Feedback & Dialog'),
+        backgroundColor: Colors.green.shade700,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Form(
+              key: _formKey,
+              child: Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Form Feedback (Dengan Dialog & Loading)',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Nama Mahasiswa',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Nama wajib diisi';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _idController,
+                        decoration: const InputDecoration(
+                          labelText: 'NIM Mahasiswa',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.badge),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'NIM wajib diisi';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _commentController,
                         maxLines: 3,
@@ -1980,18 +2232,40 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Tombol Submit
+                      // Poin 3: Tampilkan CircularProgressIndicator saat _isLoading = true
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton.icon(
+                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 1, 240, 77),
+                            backgroundColor: Colors.green.shade700,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          onPressed: _submitForm,
-                          icon: const Icon(Icons.send),
-                          label: const Text('Kirim Feedback'),
+                          onPressed:
+                              _isLoading ? null : _processFormWithConfirmation,
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 22,
+                                  width: 22,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2.5,
+                                  ),
+                                )
+                              : const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.send),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Proses & Kirim Feedback',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ),
                       ),
                     ],
@@ -1999,8 +2273,6 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
                 ),
               ),
             ),
-
-            // Poin 4: Menampilkan hasil input setelah terverifikasi valid
             if (_submittedData != null) ...[
               const SizedBox(height: 24),
               Card(
@@ -2016,10 +2288,10 @@ class _Stage13MainPageState extends State<Stage13MainPage> {
                     children: [
                       Row(
                         children: const [
-                          Icon(Icons.check_circle, color: Colors.green),
+                          Icon(Icons.verified, color: Colors.green, size: 28),
                           SizedBox(width: 8),
                           Text(
-                            'Hasil Feedback Terverifikasi:',
+                            'Status: Feedback Sukses Terkirim!',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
