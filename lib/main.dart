@@ -80,3 +80,80 @@ class ResponsiveProblemPage extends StatelessWidget {
     );
   }
 }
+
+
+//  Tahap 2: MediaQuery 
+
+class MediaQueryDemoPage extends StatelessWidget {
+  const MediaQueryDemoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Membaca informasi ukuran layar dan orientasi dari context
+    final size = MediaQuery.of(context).size;
+    final orientation = MediaQuery.of(context).orientation;
+    final String category =
+        size.width < 600 ? 'Compact (Layar Sempit)' : 'Wide (Layar Lebar)';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tahap 2: MediaQuery'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '$studentId - $studentName',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  const Divider(height: 24),
+                  Text('Lebar Layar (Width): ${size.width.toStringAsFixed(0)} px'),
+                  const SizedBox(height: 8),
+                  Text('Tinggi Layar (Height): ${size.height.toStringAsFixed(0)} px'),
+                  const SizedBox(height: 8),
+                  Text('Orientasi Layar: $orientation'),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue),
+                    ),
+                    child: Text(
+                      'Kategori: $category',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
