@@ -99,11 +99,13 @@ class MainMenuPage extends StatelessWidget {
                   context, 'Tahap 10: NavigationBar', const Stage10MainPage()),
               _navButton(context, 'Tahap 11: NavigationRail & NavigationBar',
                   const Stage11MainPage()),
-              const Divider(height: 24),
               _navButton(
                   context,
                   'Tahap 12: Button, InkWell, & GestureDetector',
-                  const Stage12MainPage(),
+                  const Stage12MainPage()),
+              const Divider(height: 24),
+              _navButton(context, 'Tahap 13: Form Input dan Validasi',
+                  const Stage13MainPage(),
                   isPrimary: true),
             ],
           ),
@@ -120,10 +122,10 @@ class MainMenuPage extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isPrimary ? Colors.indigo : Colors.white,
+            backgroundColor: isPrimary ? Colors.deepOrange : Colors.white,
             foregroundColor: isPrimary ? Colors.white : const Color(0xFF1976D2),
             side: BorderSide(
-                color: isPrimary ? Colors.indigo : const Color(0xFF1976D2)),
+                color: isPrimary ? Colors.deepOrange : const Color(0xFF1976D2)),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
           onPressed: () => Navigator.push(
@@ -1428,7 +1430,7 @@ class Stage10HomeScreen extends StatelessWidget {
               leading: CircleAvatar(
                 backgroundColor: Colors.teal,
                 foregroundColor: Colors.white,
-                child: Icon(Icons.devices_other),
+                child: Icon(Icons.devices),
               ),
               title: Text(
                 'Status Adaptive Layout',
@@ -1590,7 +1592,6 @@ class Stage12MainPage extends StatefulWidget {
 }
 
 class _Stage12MainPageState extends State<Stage12MainPage> {
-  // Poin 2: State boolean untuk fitur favorite
   bool isFavorite = false;
 
   final Map<String, dynamic> course = const {
@@ -1602,7 +1603,6 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
         'Mempelajari penggunaan Button, InkWell untuk efek ripple Material, dan GestureDetector untuk menangani gesture tap serta long press pada Flutter.',
   };
 
-  // Poin 4: Dialog Informasi saat Long Press
   void _showCourseDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -1650,7 +1650,6 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Identitas Mahasiswa Banner
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -1688,15 +1687,12 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
               style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
             ),
             const SizedBox(height: 16),
-
-            // Poin 1 & 4: Material + InkWell (onTap & onLongPress)
             Material(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               elevation: 4,
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                // Poin 1: Aksi tap pada CourseCard
                 onTap: () {
                   setState(() {
                     isFavorite = !isFavorite;
@@ -1713,7 +1709,6 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
                     ),
                   );
                 },
-                // Poin 4: Gesture lain (Long Press untuk menampilkan informasi)
                 onLongPress: () {
                   _showCourseDialog(context);
                 },
@@ -1740,7 +1735,6 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
                               ),
                             ),
                           ),
-                          // Poin 2 & 3: Tombol favorite dengan icon berbeda untuk aktif/nonaktif
                           IconButton(
                             icon: Icon(
                               isFavorite
@@ -1791,8 +1785,6 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
               ),
             ),
             const SizedBox(height: 24),
-
-            // Demo GestureDetector eksplisit terpisah
             const Text(
               'Demo GestureDetector (Tombol Aksi Eksplisit):',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -1833,6 +1825,229 @@ class _Stage12MainPageState extends State<Stage12MainPage> {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//  TAHAP 13: FORM INPUT DAN VALIDASI
+
+class Stage13MainPage extends StatefulWidget {
+  const Stage13MainPage({super.key});
+
+  @override
+  State<Stage13MainPage> createState() => _Stage13MainPageState();
+}
+
+class _Stage13MainPageState extends State<Stage13MainPage> {
+  // Poin 4: Form + GlobalKey<FormState>
+  final _formKey = GlobalKey<FormState>();
+
+  // Poin 2: Nama dan NIM terisi default dari konstanta
+  late TextEditingController _nameController;
+  late TextEditingController _idController;
+  final TextEditingController _commentController = TextEditingController();
+
+  Map<String, String>? _submittedData;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: studentName);
+    _idController = TextEditingController(text: studentId);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _idController.dispose();
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  // Poin 4: Validasi form sebelum menampilkan hasil
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _submittedData = {
+          'name': _nameController.text.trim(),
+          'id': _idController.text.trim(),
+          'comment': _commentController.text.trim(),
+        };
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Form Feedback Berhasil Valid & Terkirim!'),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tahap 13: Form Input & Validasi'),
+        backgroundColor: Colors.deepOrange,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Poin 1: Form Feedback sederhana (Form + GlobalKey)
+            Form(
+              key: _formKey,
+              child: Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Form Feedback Praktikum',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepOrange,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Field Nama
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Nama Mahasiswa',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Nama wajib diisi';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Field NIM
+                      TextFormField(
+                        controller: _idController,
+                        decoration: const InputDecoration(
+                          labelText: 'NIM Mahasiswa',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.badge),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'NIM wajib diisi';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Poin 3: Field Komentar wajib minimal 5 karakter
+                      TextFormField(
+                        controller: _commentController,
+                        maxLines: 3,
+                        decoration: const InputDecoration(
+                          labelText: 'Komentar / Masukan',
+                          hintText: 'Tuliskan masukan Anda...',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.comment),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Komentar wajib diisi';
+                          }
+                          if (value.trim().length < 5) {
+                            return 'Komentar wajib diisi minimal 5 karakter';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Tombol Submit
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepOrange,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          onPressed: _submitForm,
+                          icon: const Icon(Icons.send),
+                          label: const Text('Kirim Feedback'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Poin 4: Menampilkan hasil input setelah terverifikasi valid
+            if (_submittedData != null) ...[
+              const SizedBox(height: 24),
+              Card(
+                color: Colors.green.shade50,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(color: Colors.green.shade400, width: 1.5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(Icons.check_circle, color: Colors.green),
+                          SizedBox(width: 8),
+                          Text(
+                            'Hasil Feedback Terverifikasi:',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 20),
+                      Text(
+                        'Nama: ${_submittedData!['name']}',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'NIM: ${_submittedData!['id']}',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Komentar:\n"${_submittedData!['comment']}"',
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
