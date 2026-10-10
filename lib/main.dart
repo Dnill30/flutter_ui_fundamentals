@@ -79,27 +79,27 @@ class MainMenuPage extends StatelessWidget {
               const SizedBox(height: 12),
               _navButton(context, 'Tahap 1: Responsive Problem',
                   const ResponsiveProblemPage()),
-              _navButton(context, 'Tahap 2: MediaQuery',
-                  const MediaQueryDemoPage()),
-              _navButton(context, 'Tahap 3: Breakpoint',
-                  const BreakpointDemoPage()),
+              _navButton(
+                  context, 'Tahap 2: MediaQuery', const MediaQueryDemoPage()),
+              _navButton(
+                  context, 'Tahap 3: Breakpoint', const BreakpointDemoPage()),
               _navButton(context, 'Tahap 4: Expanded, Flexible, Wrap',
                   const FlexWrapDemoPage()),
               _navButton(context, 'Tahap 5: GridView Responsif',
                   const CourseGridPage()),
               _navButton(context, 'Tahap 6: Scrollable Content & Keyboard',
                   const ScrollDemoPage()),
-              _navButton(context, 'Tahap 7: Navigator push/pop',
-                  const Nav7HomePage()),
-              _navButton(context, 'Tahap 8: Course Explorer (Navigasi & Detail)',
+              _navButton(
+                  context, 'Tahap 7: Navigator push/pop', const Nav7HomePage()),
+              _navButton(context, 'Tahap 8: Course Explorer List',
                   const CourseExplorerListPage()),
               _navButton(context, 'Tahap 9: Navigasi Result & SnackBar',
                   const CourseExplorerListPage()),
-              const Divider(height: 24),
               _navButton(
-                  context,
-                  'Tahap 10: NavigationBar (Home, Courses, Profile)',
-                  const Stage10MainPage(),
+                  context, 'Tahap 10: NavigationBar', const Stage10MainPage()),
+              const Divider(height: 24),
+              _navButton(context, 'Tahap 11: NavigationRail & NavigationBar',
+                  const Stage11MainPage(),
                   isPrimary: true),
             ],
           ),
@@ -116,11 +116,10 @@ class MainMenuPage extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isPrimary ? Colors.deepPurple : Colors.white,
-            foregroundColor:
-                isPrimary ? Colors.white : const Color(0xFF1976D2),
+            backgroundColor: isPrimary ? Colors.teal : Colors.white,
+            foregroundColor: isPrimary ? Colors.white : const Color(0xFF1976D2),
             side: BorderSide(
-                color: isPrimary ? Colors.deepPurple : const Color(0xFF1976D2)),
+                color: isPrimary ? Colors.teal : const Color(0xFF1976D2)),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
           onPressed: () => Navigator.push(
@@ -232,9 +231,11 @@ class MediaQueryDemoPage extends StatelessWidget {
                     ),
                   ),
                   const Divider(height: 24),
-                  Text('Lebar Layar (Width): ${size.width.toStringAsFixed(0)} px'),
+                  Text(
+                      'Lebar Layar (Width): ${size.width.toStringAsFixed(0)} px'),
                   const SizedBox(height: 8),
-                  Text('Tinggi Layar (Height): ${size.height.toStringAsFixed(0)} px'),
+                  Text(
+                      'Tinggi Layar (Height): ${size.height.toStringAsFixed(0)} px'),
                   const SizedBox(height: 8),
                   Text('Orientasi Layar: $orientation'),
                   const SizedBox(height: 16),
@@ -367,8 +368,8 @@ class ExpandedLayout extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 'Kategori Breakpoint: Expanded (>= 840 px)',
-                style: TextStyle(
-                    color: Colors.green, fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -477,7 +478,8 @@ class FlexWrapDemoPage extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   flex: 1,
-                  child: buildFlexBox('Panel B (Flex 1)', Colors.green.shade100),
+                  child:
+                      buildFlexBox('Panel B (Flex 1)', Colors.green.shade100),
                 ),
               ],
             ),
@@ -589,10 +591,8 @@ class CourseGridPage extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       c['title']!,
@@ -1054,8 +1054,7 @@ class Stage8or9DetailPage extends StatelessWidget {
                   SizedBox(height: 2),
                   Text(
                     'NIM: $studentId',
-                    style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -1194,7 +1193,7 @@ class Stage8or9DetailPage extends StatelessWidget {
   }
 }
 
-// TAHAP 10: NAVIGATION BAR (HOME, COURSES, PROFILE)
+// TAHAP 10: NAVIGATION BAR
 
 class Stage10MainPage extends StatefulWidget {
   const Stage10MainPage({super.key});
@@ -1204,11 +1203,8 @@ class Stage10MainPage extends StatefulWidget {
 }
 
 class _Stage10MainPageState extends State<Stage10MainPage> {
-
-  // Poin 2: StatefulWidget menyimpan selectedIndex (currentIndex)
   int currentIndex = 0;
 
-  // Poin 3: Daftar Halaman Sesuai Index
   final List<Widget> pages = [
     const Stage10HomeScreen(),
     const Stage10CoursesScreen(),
@@ -1223,10 +1219,7 @@ class _Stage10MainPageState extends State<Stage10MainPage> {
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
-      // Poin 3: Menampilkan Widget/Page Sesuai Index
       body: pages[currentIndex],
-
-      // Poin 1 & Kode Acuan Tugas: NavigationBar Material 3 dengan 3 Destination
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: (index) {
@@ -1251,7 +1244,121 @@ class _Stage10MainPageState extends State<Stage10MainPage> {
   }
 }
 
-// Tab 1: Home Screen (Menampilkan Identitas Mahasiswa)
+// TAHAP 11: NAVIGATIONRAIL & NAVIGATIONBAR (ADAPTIVE SHELL)
+
+class Stage11MainPage extends StatefulWidget {
+  const Stage11MainPage({super.key});
+
+  @override
+  State<Stage11MainPage> createState() => _Stage11MainPageState();
+}
+
+class _Stage11MainPageState extends State<Stage11MainPage> {
+  // Poin 4: selectedIndex disimpan pada StatefulWidget agar page aktif tetap sama saat layout berubah
+  int selectedIndex = 0;
+
+  final List<Widget> pages = [
+    const Stage10HomeScreen(),
+    const Stage10CoursesScreen(),
+    const Stage10ProfileScreen(),
+  ];
+
+  // Helper Widget Poin 2: NavigationBar untuk Compact / Medium Screen (< 840 px)
+  Widget buildNavigationBar() {
+    return NavigationBar(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: (index) {
+        setState(() => selectedIndex = index);
+      },
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.school),
+          label: 'Courses',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+      ],
+    );
+  }
+
+  // Helper Widget Poin 3: NavigationRail untuk Expanded Screen (>= 840 px)
+  Widget buildNavigationRail() {
+    return NavigationRail(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: (index) {
+        setState(() => selectedIndex = index);
+      },
+      labelType: NavigationRailLabelType.all,
+      leading: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: CircleAvatar(
+          backgroundColor: Colors.teal,
+          foregroundColor: Colors.white,
+          child: Text(
+            studentName.isNotEmpty ? studentName[0] : 'A',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+      destinations: const [
+        NavigationRailDestination(
+          icon: Icon(Icons.home),
+          label: Text('Home'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.school),
+          label: Text('Courses'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.person),
+          label: Text('Profile'),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tahap 11: NavigationRail & Bar'),
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
+      ),
+      // Poin 1: Menggunakan LayoutBuilder pada Shell Aplikasi
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // Poin 2: Tampilkan NavigationBar jika lebar < 840 px (Compact/Medium)
+          if (constraints.maxWidth < 840) {
+            return Scaffold(
+              body: pages[selectedIndex],
+              bottomNavigationBar: buildNavigationBar(),
+            );
+          }
+
+          // Poin 3: Tampilkan NavigationRail jika lebar >= 840 px (Expanded)
+          return Scaffold(
+            body: Row(
+              children: [
+                buildNavigationRail(),
+                const VerticalDivider(width: 1, thickness: 1),
+                Expanded(child: pages[selectedIndex]),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// Sub-Screens untuk Tahap 10 & 11
 class Stage10HomeScreen extends StatelessWidget {
   const Stage10HomeScreen({super.key});
 
@@ -1262,13 +1369,12 @@ class Stage10HomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Poin 4: Identitas Mahasiswa pada Screen Home
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Colors.deepPurple, Colors.indigo],
+                colors: [Colors.teal, Colors.tealAccent],
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -1302,7 +1408,7 @@ class Stage10HomeScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+              color: Colors.teal,
             ),
           ),
           const SizedBox(height: 12),
@@ -1322,16 +1428,16 @@ class Stage10HomeScreen extends StatelessWidget {
             child: const ListTile(
               contentPadding: EdgeInsets.all(16),
               leading: CircleAvatar(
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: Colors.teal,
                 foregroundColor: Colors.white,
-                child: Icon(Icons.lightbulb_outline),
+                child: Icon(Icons.devices),
               ),
               title: Text(
-                'Status Praktikum',
+                'Status Adaptive Layout',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                'Tahap 10 NavigationBar Material 3 Berhasil Diimplementasikan.',
+                'LayoutBuilder mengaktifkan NavigationBar (< 840px) & NavigationRail (>= 840px).',
               ),
             ),
           ),
@@ -1372,7 +1478,6 @@ class Stage10HomeScreen extends StatelessWidget {
   }
 }
 
-// Tab 2: Courses Screen
 class Stage10CoursesScreen extends StatelessWidget {
   const Stage10CoursesScreen({super.key});
 
@@ -1388,7 +1493,7 @@ class Stage10CoursesScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+              color: Colors.teal,
             ),
           ),
           const SizedBox(height: 12),
@@ -1405,7 +1510,7 @@ class Stage10CoursesScreen extends StatelessWidget {
                 Card(
                   child: ListTile(
                     leading: Icon(Icons.navigation, color: Colors.orange),
-                    title: Text('Navigation & NavigationBar'),
+                    title: Text('Navigation & NavigationRail'),
                     subtitle: Text('MOB05 • Status: Active'),
                   ),
                 ),
@@ -1425,7 +1530,6 @@ class Stage10CoursesScreen extends StatelessWidget {
   }
 }
 
-// Tab 3: Profile Screen (Menampilkan Identitas Mahasiswa - Poin 4)
 class Stage10ProfileScreen extends StatelessWidget {
   const Stage10ProfileScreen({super.key});
 
@@ -1437,12 +1541,10 @@ class Stage10ProfileScreen extends StatelessWidget {
         children: [
           const CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.deepPurple,
+            backgroundColor: Colors.teal,
             child: Icon(Icons.person, size: 60, color: Colors.white),
           ),
           const SizedBox(height: 16),
-
-          // Poin 4: Identitas Mahasiswa pada Screen Profile
           Text(
             studentName,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -1458,21 +1560,20 @@ class Stage10ProfileScreen extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
           const Divider(height: 40),
-
           const ListTile(
-            leading: Icon(Icons.school, color: Colors.deepPurple),
+            leading: Icon(Icons.school, color: Colors.teal),
             title: Text('Mata Kuliah'),
             subtitle: Text('Praktikum Pemrograman Mobile'),
           ),
           const ListTile(
-            leading: Icon(Icons.menu_book, color: Colors.deepPurple),
+            leading: Icon(Icons.menu_book, color: Colors.teal),
             title: Text('Modul'),
-            subtitle: Text('Modul 5: Layout, Responsiveness & Navigation'),
+            subtitle: Text('Modul 5: Adaptive Navigation Shell (Tahap 11)'),
           ),
           const ListTile(
             leading: Icon(Icons.check_circle, color: Colors.green),
             title: Text('Status Verifikasi'),
-            subtitle: Text('100% Seluruh Tahap Praktikum Selesai'),
+            subtitle: Text('100% Seluruh Tahap Modul 5 Berhasil'),
           ),
         ],
       ),
