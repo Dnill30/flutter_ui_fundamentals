@@ -9,24 +9,18 @@ import 'repositories/course_repository.dart';
 const String studentName = 'Achmad Dhanil Ahkam';
 const String studentId = '2415051049';
 
-void main() async {
-  // Tahap 10: Uji CourseRepository yang membungkus CourseService lewat debugPrint
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final courseService = CourseService();
   final courseRepository = CourseRepository(courseService);
-  final testCourses = await courseRepository.getCourses();
-  debugPrint(
-      'Tahap 10 - CourseRepository berhasil mengambil ${testCourses.length} '
-      'course. Judul pertama: ${testCourses.first.title}');
 
   runApp(
-    // Tahap 6: ChangeNotifierProvider "memasang" satu instance CourseProvider
-    // ke widget tree, sehingga seluruh widget DI BAWAH-nya bisa mengakses
-    // object CourseProvider yang SAMA lewat context (context.watch/read),
-    // tanpa harus diteruskan manual lewat constructor (ini solusi untuk
-    // prop drilling di Tahap 2).
+    // Tahap 6: ChangeNotifierProvider memasang satu instance CourseProvider
+    // ke widget tree.
+    // Tahap 11: repository dikirim ke provider, dan loadCourses() langsung
+    // dipanggil (cascade ..) saat provider dibuat.
     ChangeNotifierProvider(
-      create: (context) => CourseProvider(courseRepository),
+      create: (context) => CourseProvider(courseRepository)..loadCourses(),
       child: const MyApp(),
     ),
   );
@@ -725,19 +719,58 @@ class Stage15MainPage extends StatefulWidget {
 class _Stage15MainPageState extends State<Stage15MainPage> {
   int selectedIndex = 0;
 
-  void toggleFavorite(int index) {
-    context.read<CourseProvider>().toggleFavorite(index);
+  void toggleFavorite(Course course) {
+    context.read<CourseProvider>().toggleFavorite(course);
+  }
+
+  // Tahap 11 (langkah 48-50): UI hanya membaca state dari provider.
+  // - isLoading -> CircularProgressIndicator
+  // - error != null -> pesan error + tombol coba lagi
+  // - selain itu -> tampilkan halaman (list) seperti biasa
+  Widget _buildBody(CourseProvider provider, List<Widget> pages) {
+    // Tab Profile tidak bergantung pada data course.
+    if (selectedIndex == 2) return pages[2];
+
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (provider.error != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 40),
+              const SizedBox(height: 12),
+              Text(
+                'Gagal memuat data: ${provider.error}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.red),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () => context.read<CourseProvider>().loadCourses(),
+                child: const Text('Coba Lagi'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return pages[selectedIndex];
   }
 
   @override
   Widget build(BuildContext context) {
     final courseProvider = context.watch<CourseProvider>();
-    final List<Course> courses = courseProvider.courses;
     final int favoriteCount = courseProvider.favoriteCount;
 
     final List<Widget> pages = [
-      Stage15HomePage(courses: courses, onFavoriteToggle: toggleFavorite),
-      Stage15CoursesPage(courses: courses, onFavoriteToggle: toggleFavorite),
+      Stage15HomePage(onFavoriteToggle: toggleFavorite),
+      Stage15CoursesPage(onFavoriteToggle: toggleFavorite),
       const Stage15ProfileFeedbackPage(),
     ];
 
@@ -751,7 +784,7 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
         builder: (context, constraints) {
           if (constraints.maxWidth < 840) {
             return Scaffold(
-              body: pages[selectedIndex],
+              body: _buildBody(courseProvider, pages),
               bottomNavigationBar: NavigationBar(
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (idx) =>
@@ -798,7 +831,7 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                   ],
                 ),
                 const VerticalDivider(width: 1, thickness: 1),
-                Expanded(child: pages[selectedIndex]),
+                Expanded(child: _buildBody(courseProvider, pages)),
               ],
             ),
           );
@@ -809,12 +842,10 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
 }
 
 class Stage15HomePage extends StatelessWidget {
-  final List<Course> courses;
-  final Function(int) onFavoriteToggle;
+  final void Function(Course) onFavoriteToggle;
 
   const Stage15HomePage({
     super.key,
-    required this.courses,
     required this.onFavoriteToggle,
   });
 
@@ -822,62 +853,68 @@ class Stage15HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const StudentHeaderWidget(title: 'Course Explorer Home'),
-          const SizedBox(height: 16),
-          Consumer<CourseProvider>(
-            builder: (context, provider, child) {
-              return FavoriteSummaryBar(
-                favoriteCount: provider.favoriteCount,
-              );
-            },
-          ),
-          const Text('Course Favorit:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          for (int i = 0; i < courses.length; i++)
-            if (courses[i].isFavorite)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: CourseCardWidget(
-                  course: courses[i],
-                  isFavorite: true,
-                  onTap: () {},
-                  onFavoriteToggle: () => onFavoriteToggle(i),
+      child: Consumer<CourseProvider>(
+        builder: (context, provider, child) {
+          final favorites =
+              provider.courses.where((c) => provider.isFavorite(c)).toList();
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const StudentHeaderWidget(title: 'Course Explorer Home'),
+              const SizedBox(height: 16),
+              FavoriteSummaryBar(favoriteCount: provider.favoriteCount),
+              const Text('Course Favorit:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              for (final course in favorites)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: CourseCardWidget(
+                    course: course,
+                    isFavorite: true,
+                    onTap: () {},
+                    onFavoriteToggle: () => onFavoriteToggle(course),
+                  ),
                 ),
-              ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
 }
 
 class Stage15CoursesPage extends StatelessWidget {
-  final List<Course> courses;
-  final Function(int) onFavoriteToggle;
+  final void Function(Course) onFavoriteToggle;
 
   const Stage15CoursesPage({
     super.key,
-    required this.courses,
     required this.onFavoriteToggle,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: courses.length,
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: CourseCardWidget(
-          course: courses[index],
-          isFavorite: courses[index].isFavorite,
-          onTap: () {},
-          onFavoriteToggle: () => onFavoriteToggle(index),
-        ),
-      ),
+    return Consumer<CourseProvider>(
+      builder: (context, provider, child) {
+        final courses = provider.filteredCourses;
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: courses.length,
+          itemBuilder: (context, index) {
+            final course = courses[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: CourseCardWidget(
+                course: course,
+                isFavorite: provider.isFavorite(course),
+                onTap: () {},
+                onFavoriteToggle: () => onFavoriteToggle(course),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
