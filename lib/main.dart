@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ===================== REUSABLE WIDGETS =====================
+//  REUSABLE WIDGETS 
 
 class StudentHeaderWidget extends StatelessWidget {
   final String title;
@@ -75,7 +75,7 @@ class StudentHeaderWidget extends StatelessWidget {
   }
 }
 
-// ===================== Tahap 1 (Pertemuan 6): local state expand/collapse =====================
+//  Tahap 1 (Pertemuan 6): local state expand/collapse 
 // CourseCardWidget diubah dari StatelessWidget menjadi StatefulWidget supaya
 // bisa menyimpan local state `isExpanded`, yang HANYA relevan untuk card ini
 // sendiri (tidak perlu dan tidak boleh dikelola lewat Provider/shared state).
@@ -222,7 +222,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
   }
 }
 
-// ===================== MENU UTAMA NAVIGASI =====================
+//  MENU UTAMA NAVIGASI 
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -326,7 +326,7 @@ class MainMenuPage extends StatelessWidget {
   }
 }
 
-// ===================== TAHAP 1 SAMPAI 14 (SUB-PAGES) =====================
+//  TAHAP 1 SAMPAI 14 (SUB-PAGES) 
 
 class ResponsiveProblemPage extends StatelessWidget {
   const ResponsiveProblemPage({super.key});
@@ -669,7 +669,7 @@ class Stage14MainPage extends StatelessWidget {
   }
 }
 
-// ===================== Tahap 2 (Pertemuan 6): Demo Prop Drilling =====================
+//  Tahap 2 (Pertemuan 6): Demo Prop Drilling 
 // Widget kecil ini HANYA butuh satu angka (jumlah favorite), tapi karena
 // datanya dimiliki oleh Stage15MainPage (parent paling atas), angka itu
 // harus "nembus" lewat constructor: Stage15MainPage -> Stage15HomePage ->
@@ -704,7 +704,7 @@ class FavoriteSummaryBar extends StatelessWidget {
   }
 }
 
-// ===================== TAHAP 15: MINI PROJECT INTEGRASI =====================
+//  TAHAP 15: MINI PROJECT INTEGRASI 
 
 class Stage15MainPage extends StatefulWidget {
   const Stage15MainPage({super.key});
@@ -848,6 +848,9 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                   destinations: [
                     const NavigationRailDestination(
                         icon: Icon(Icons.home), label: Text('Home')),
+                    // Tahap 3: widget KEDUA (versi expanded) yang menampilkan
+                    // nilai favoriteCount yang sama dari single source of
+                    // truth yang sama persis dengan FavoriteSummaryBar.
                     NavigationRailDestination(
                       icon: Badge(
                         label: Text('$favoriteCount'),
@@ -953,12 +956,83 @@ class Stage15ProfileFeedbackPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SingleChildScrollView(
       padding: EdgeInsets.all(20),
-      child: StudentHeaderWidget(title: 'Profil Mahasiswa'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StudentHeaderWidget(title: 'Profil Mahasiswa'),
+          SizedBox(height: 20),
+          ValueNotifierDemo(),
+        ],
+      ),
     );
   }
 }
 
-// ===================== TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) =====================
+//  Tahap 4 (Pertemuan 6): ValueNotifier 
+
+class ValueNotifierDemo extends StatefulWidget {
+  const ValueNotifierDemo({super.key});
+
+  @override
+  State<ValueNotifierDemo> createState() => _ValueNotifierDemoState();
+}
+
+class _ValueNotifierDemoState extends State<ValueNotifierDemo> {
+  final ValueNotifier<int> favoriteCounter = ValueNotifier<int>(0);
+
+  @override
+  void dispose() {
+    favoriteCounter.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Tahap 4: ValueNotifier Demo',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 4),
+            Text('$studentId - $studentName'),
+            const SizedBox(height: 12),
+            ValueListenableBuilder<int>(
+              valueListenable: favoriteCounter,
+              builder: (context, value, child) {
+                return Text(
+                  'Simulasi jumlah favorite: $value',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () => favoriteCounter.value++,
+                  child: const Text('Tambah'),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton(
+                  onPressed: () => favoriteCounter.value = 0,
+                  child: const Text('Reset'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//  TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) 
 
 class Stage16MainPage extends StatefulWidget {
   const Stage16MainPage({super.key});
