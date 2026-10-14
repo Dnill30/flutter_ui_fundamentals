@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'course_provider.dart';
-import 'models/course.dart';
+import 'package:flutter_ui_fundamentals/course_provider.dart';
+import 'package:flutter_ui_fundamentals/models/course.dart';
+import 'package:flutter_ui_fundamentals/services/course_service.dart';
 
 // Identitas Mahasiswa Global
 const String studentName = 'Achmad Dhanil Ahkam';
 const String studentId = '2415051049';
 
-void main() {
+void main() async {
+  // Tahap 9: uji CourseService secara terpisah dulu lewat debugPrint,
+  // sebelum nanti di Tahap 10-11 benar-benar dipakai oleh Provider.
+  WidgetsFlutterBinding.ensureInitialized();
+  final testCourses = await CourseService().loadCourses();
+  debugPrint('Tahap 9 - CourseService berhasil memuat ${testCourses.length} '
+      'course. Judul pertama: ${testCourses.first.title}');
+
   runApp(
     // Tahap 6: ChangeNotifierProvider "memasang" satu instance CourseProvider
     // ke widget tree, sehingga seluruh widget DI BAWAH-nya bisa mengakses
@@ -89,9 +97,6 @@ class StudentHeaderWidget extends StatelessWidget {
 }
 
 // ===================== Tahap 1 (Pertemuan 6): local state expand/collapse =====================
-// CourseCardWidget diubah dari StatelessWidget menjadi StatefulWidget supaya
-// bisa menyimpan local state `isExpanded`, yang HANYA relevan untuk card ini
-// sendiri (tidak perlu dan tidak boleh dikelola lewat Provider/shared state).
 class CourseCardWidget extends StatefulWidget {
   final Map<String, dynamic> course;
   final bool isFavorite;
@@ -111,7 +116,6 @@ class CourseCardWidget extends StatefulWidget {
 }
 
 class _CourseCardWidgetState extends State<CourseCardWidget> {
-  // Tahap 1: local state, hanya memengaruhi tampilan card ini sendiri.
   bool isExpanded = false;
 
   @override
@@ -135,8 +139,8 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade100,
                       borderRadius: BorderRadius.circular(6),
@@ -152,7 +156,6 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                   ),
                   Row(
                     children: [
-                      // Tahap 1: tombol toggle local state expand/collapse
                       IconButton(
                         icon: Icon(
                           isExpanded ? Icons.expand_less : Icons.expand_more,
@@ -217,7 +220,6 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                   ),
                 ],
               ),
-              // Tahap 1: konten yang muncul/hilang berdasarkan local state
               if (isExpanded) ...[
                 const SizedBox(height: 8),
                 const Divider(),
@@ -254,8 +256,7 @@ class MainMenuPage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              const StudentHeaderWidget(
-                  title: 'Praktikum Pemrograman Mobile'),
+              const StudentHeaderWidget(title: 'Praktikum Pemrograman Mobile'),
               const SizedBox(height: 24),
               const Text(
                 'Daftar Tahap Modul Praktikum:',
@@ -264,27 +265,29 @@ class MainMenuPage extends StatelessWidget {
               const SizedBox(height: 12),
               _navButton(context, 'Tahap 1: Responsive Problem',
                   const ResponsiveProblemPage()),
-              _navButton(context, 'Tahap 2: MediaQuery',
-                  const MediaQueryDemoPage()),
-              _navButton(context, 'Tahap 3: Breakpoint',
-                  const BreakpointDemoPage()),
+              _navButton(
+                  context, 'Tahap 2: MediaQuery', const MediaQueryDemoPage()),
+              _navButton(
+                  context, 'Tahap 3: Breakpoint', const BreakpointDemoPage()),
               _navButton(context, 'Tahap 4: Expanded, Flexible, Wrap',
                   const FlexWrapDemoPage()),
               _navButton(context, 'Tahap 5: GridView Responsif',
                   const CourseGridPage()),
               _navButton(context, 'Tahap 6: Scrollable Content & Keyboard',
                   const ScrollDemoPage()),
-              _navButton(context, 'Tahap 7: Navigator push/pop',
-                  const Nav7HomePage()),
+              _navButton(
+                  context, 'Tahap 7: Navigator push/pop', const Nav7HomePage()),
               _navButton(context, 'Tahap 8: Course Explorer List',
                   const CourseExplorerListPage()),
               _navButton(context, 'Tahap 9: Navigasi Result & SnackBar',
                   const CourseExplorerListPage()),
-              _navButton(context, 'Tahap 10: NavigationBar',
-                  const Stage10MainPage()),
+              _navButton(
+                  context, 'Tahap 10: NavigationBar', const Stage10MainPage()),
               _navButton(context, 'Tahap 11: NavigationRail & NavigationBar',
                   const Stage11MainPage()),
-              _navButton(context, 'Tahap 12: Button, InkWell, & GestureDetector',
+              _navButton(
+                  context,
+                  'Tahap 12: Button, InkWell, & GestureDetector',
                   const Stage12MainPage()),
               _navButton(context, 'Tahap 13: Form Input dan Validasi',
                   const Stage13MainPage()),
@@ -295,9 +298,7 @@ class MainMenuPage extends StatelessWidget {
                   'Tahap 15: Mini Project - Responsive Course Explorer',
                   const Stage15MainPage()),
               const Divider(height: 24),
-              _navButton(
-                  context,
-                  'Tahap 16: Debugging Challenge',
+              _navButton(context, 'Tahap 16: Debugging Challenge',
                   const Stage16MainPage(),
                   isPrimary: true),
             ],
@@ -315,10 +316,8 @@ class MainMenuPage extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor:
-                isPrimary ? const Color(0xFF1976D2) : Colors.white,
-            foregroundColor:
-                isPrimary ? Colors.white : const Color(0xFF1976D2),
+            backgroundColor: isPrimary ? const Color(0xFF1976D2) : Colors.white,
+            foregroundColor: isPrimary ? Colors.white : const Color(0xFF1976D2),
             side: const BorderSide(color: Color(0xFF1976D2)),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
@@ -355,8 +354,8 @@ class ResponsiveProblemPage extends StatelessWidget {
       body: const Center(
         child: Padding(
           padding: EdgeInsets.all(16),
-          child: StudentHeaderWidget(
-              title: 'Tahap 1: Masalah Layout Responsif'),
+          child:
+              StudentHeaderWidget(title: 'Tahap 1: Masalah Layout Responsif'),
         ),
       ),
     );
@@ -574,7 +573,8 @@ class Nav7HomePage extends StatelessWidget {
             MaterialPageRoute(
                 builder: (_) => Scaffold(
                       appBar: AppBar(title: const Text('Detail Screen')),
-                      body: const Center(child: Text('Halaman Detail Navigasi')),
+                      body:
+                          const Center(child: Text('Halaman Detail Navigasi')),
                     )),
           ),
           child: const Text('Buka Halaman Detail'),
@@ -682,12 +682,6 @@ class Stage14MainPage extends StatelessWidget {
   }
 }
 
-// ===================== Tahap 2 (Pertemuan 6): Demo Prop Drilling =====================
-// Widget kecil ini HANYA butuh satu angka (jumlah favorite), tapi karena
-// datanya dimiliki oleh Stage15MainPage (parent paling atas), angka itu
-// harus "nembus" lewat constructor: Stage15MainPage -> Stage15HomePage ->
-// FavoriteSummaryBar. Ini contoh nyata prop drilling: semakin dalam widget
-// tree, semakin banyak constructor yang harus meneruskan data yang sama.
 class FavoriteSummaryBar extends StatelessWidget {
   final int favoriteCount;
   const FavoriteSummaryBar({super.key, required this.favoriteCount});
@@ -729,29 +723,17 @@ class Stage15MainPage extends StatefulWidget {
 class _Stage15MainPageState extends State<Stage15MainPage> {
   int selectedIndex = 0;
 
-  // Tahap 7: toggleFavorite memakai context.read<CourseProvider>() karena
-  // ini dipanggil dari dalam callback (saat tombol ditekan), BUKAN di dalam
-  // build(). read() mengambil object TANPA mendaftar sebagai listener,
-  // cocok untuk memicu aksi sekali jalan seperti ini.
   void toggleFavorite(int index) {
     context.read<CourseProvider>().toggleFavorite(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Tahap 7: context.watch<CourseProvider>() mendaftarkan Stage15MainPage
-    // sebagai listener CourseProvider. Setiap kali notifyListeners()
-    // dipanggil (misalnya dari toggleFavorite), Flutter otomatis membangun
-    // ulang build() ini -- menggantikan addListener() manual dari Tahap 5.
     final courseProvider = context.watch<CourseProvider>();
     final List<Map<String, dynamic>> courses = courseProvider.courses;
     final int favoriteCount = courseProvider.favoriteCount;
 
     final List<Widget> pages = [
-      // Tahap 7: favoriteCount TIDAK lagi diteruskan lewat constructor ke
-      // Stage15HomePage (lihat perubahan di Stage15HomePage: FavoriteSummaryBar
-      // sekarang dibungkus Consumer dan ambil datanya sendiri dari context).
-      // Ini menghilangkan prop drilling yang didemokan di Tahap 2.
       Stage15HomePage(courses: courses, onFavoriteToggle: toggleFavorite),
       Stage15CoursesPage(courses: courses, onFavoriteToggle: toggleFavorite),
       const Stage15ProfileFeedbackPage(),
@@ -775,10 +757,6 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                 destinations: [
                   const NavigationDestination(
                       icon: Icon(Icons.home), label: 'Home'),
-                  // Tahap 3: widget KEDUA yang menampilkan favoriteCount.
-                  // Sumbernya sama persis dengan FavoriteSummaryBar di Home
-                  // (single source of truth: courses milik Stage15MainPage),
-                  // sehingga keduanya WAJIB selalu konsisten.
                   NavigationDestination(
                     icon: Badge(
                       label: Text('$favoriteCount'),
@@ -805,9 +783,6 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                   destinations: [
                     const NavigationRailDestination(
                         icon: Icon(Icons.home), label: Text('Home')),
-                    // Tahap 3: widget KEDUA (versi expanded) yang menampilkan
-                    // nilai favoriteCount yang sama dari single source of
-                    // truth yang sama persis dengan FavoriteSummaryBar.
                     NavigationRailDestination(
                       icon: Badge(
                         label: Text('$favoriteCount'),
@@ -834,7 +809,7 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
 class Stage15HomePage extends StatelessWidget {
   final List<Map<String, dynamic>> courses;
   final Function(int) onFavoriteToggle;
-  // (Tahap 7: favoriteCount dihapus dari sini, lihat Consumer di build())
+
   const Stage15HomePage({
     super.key,
     required this.courses,
@@ -850,11 +825,6 @@ class Stage15HomePage extends StatelessWidget {
         children: [
           const StudentHeaderWidget(title: 'Course Explorer Home'),
           const SizedBox(height: 16),
-          // Tahap 7: Consumer membatasi area rebuild hanya pada bagian
-          // kecil ini saja. FavoriteSummaryBar sekarang mengambil
-          // favoriteCount langsung dari CourseProvider lewat context,
-          // TIDAK lagi lewat constructor Stage15HomePage -- prop drilling
-          // dari Tahap 2 sudah hilang di sini.
           Consumer<CourseProvider>(
             builder: (context, provider, child) {
               return FavoriteSummaryBar(
@@ -931,15 +901,11 @@ class Stage15ProfileFeedbackPage extends StatelessWidget {
   }
 }
 
-// Tahap 8: demo konversi satu data JSON (Map) menjadi object Course lewat
-// Course.fromJson(), lalu ditampilkan ke UI lewat properti bertipe jelas
-// (course.title, course.credits, dst), bukan lagi course['title'].
 class CourseModelDemo extends StatelessWidget {
   const CourseModelDemo({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Data mentah seolah-olah datang dari JSON (masih berupa Map).
     final Map<String, dynamic> rawJson = {
       'id': '1',
       'code': 'MOB01',
@@ -948,12 +914,10 @@ class CourseModelDemo extends StatelessWidget {
       'category': 'Mobile Web',
       'status': 'Active',
       'isFavorite': false,
-      'description':
-          'Mempelajari pembentukan antarmuka yang responsif dengan '
+      'description': 'Mempelajari pembentukan antarmuka yang responsif dengan '
           'MediaQuery, LayoutBuilder, Flex, Wrap, dan GridView dinamis.',
     };
 
-    // Konversi Map -> Course lewat factory constructor.
     final Course course = Course.fromJson(rawJson);
 
     return Card(
@@ -963,15 +927,12 @@ class CourseModelDemo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Model Course Demo',
+              'Tahap 8: Model Course Demo',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 4),
             Text('$studentId - $studentName'),
             const SizedBox(height: 12),
-            // Semua ini diakses lewat properti object (course.title),
-            // bukan key string (rawJson['title']) -- lebih aman dari typo
-            // dan diperiksa tipe datanya oleh compiler Dart.
             Text('Judul : ${course.title}'),
             Text('Kode  : ${course.code}'),
             Text('SKS   : ${course.credits}'),
@@ -983,13 +944,6 @@ class CourseModelDemo extends StatelessWidget {
   }
 }
 
-// ===================== Tahap 4 (Pertemuan 6): ValueNotifier =====================
-// ValueNotifier cocok untuk SATU nilai sederhana yang ingin dipantau tanpa
-// membungkus seluruh parent dengan setState(). Bedanya dengan setState():
-// - setState() pada StatefulWidget membangun ulang SELURUH build() method
-//   widget itu (bisa jadi banyak widget di dalamnya ikut rebuild).
-// - ValueNotifier + ValueListenableBuilder hanya membangun ulang widget
-//   KECIL di dalam builder-nya saja, jadi lebih hemat/presisi.
 class ValueNotifierDemo extends StatefulWidget {
   const ValueNotifierDemo({super.key});
 
@@ -998,9 +952,6 @@ class ValueNotifierDemo extends StatefulWidget {
 }
 
 class _ValueNotifierDemoState extends State<ValueNotifierDemo> {
-  // ValueNotifier<int> menyimpan satu nilai (di sini: simulasi jumlah
-  // favorite) dan otomatis memberi tahu listener-nya saat .value berubah,
-  // tanpa perlu setState() di widget ini sendiri.
   final ValueNotifier<int> favoriteCounter = ValueNotifier<int>(0);
 
   @override
@@ -1024,9 +975,6 @@ class _ValueNotifierDemoState extends State<ValueNotifierDemo> {
             const SizedBox(height: 4),
             Text('$studentId - $studentName'),
             const SizedBox(height: 12),
-            // ValueListenableBuilder mendengarkan favoriteCounter dan HANYA
-            // membangun ulang Text ini saja saat value berubah, bukan
-            // seluruh ValueNotifierDemo.
             ValueListenableBuilder<int>(
               valueListenable: favoriteCounter,
               builder: (context, value, child) {
@@ -1058,7 +1006,7 @@ class _ValueNotifierDemoState extends State<ValueNotifierDemo> {
   }
 }
 
-// ===================== TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) =====================
+// ===================== TAHAP 16: DEBUGGING CHALLENGE =====================
 
 class Stage16MainPage extends StatefulWidget {
   const Stage16MainPage({super.key});
@@ -1243,9 +1191,8 @@ class _Stage16MainPageState extends State<Stage16MainPage> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _isNavigating
-                      ? Colors.grey
-                      : const Color(0xFF1976D2),
+                  backgroundColor:
+                      _isNavigating ? Colors.grey : const Color(0xFF1976D2),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
