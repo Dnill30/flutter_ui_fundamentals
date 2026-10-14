@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//  REUSABLE WIDGETS 
+// ===================== REUSABLE WIDGETS =====================
 
 class StudentHeaderWidget extends StatelessWidget {
   final String title;
@@ -75,7 +75,7 @@ class StudentHeaderWidget extends StatelessWidget {
   }
 }
 
-//  Tahap 1 (Pertemuan 6): local state expand/collapse 
+// ===================== Tahap 1 (Pertemuan 6): local state expand/collapse =====================
 // CourseCardWidget diubah dari StatelessWidget menjadi StatefulWidget supaya
 // bisa menyimpan local state `isExpanded`, yang HANYA relevan untuk card ini
 // sendiri (tidak perlu dan tidak boleh dikelola lewat Provider/shared state).
@@ -222,7 +222,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
   }
 }
 
-//  MENU UTAMA NAVIGASI 
+// ===================== MENU UTAMA NAVIGASI =====================
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -326,7 +326,7 @@ class MainMenuPage extends StatelessWidget {
   }
 }
 
-//  TAHAP 1 SAMPAI 14 (SUB-PAGES) 
+// ===================== TAHAP 1 SAMPAI 14 (SUB-PAGES) =====================
 
 class ResponsiveProblemPage extends StatelessWidget {
   const ResponsiveProblemPage({super.key});
@@ -669,8 +669,12 @@ class Stage14MainPage extends StatelessWidget {
   }
 }
 
-//  Tahap 2 (Pertemuan 6): Demo Prop Drilling 
-
+// ===================== Tahap 2 (Pertemuan 6): Demo Prop Drilling =====================
+// Widget kecil ini HANYA butuh satu angka (jumlah favorite), tapi karena
+// datanya dimiliki oleh Stage15MainPage (parent paling atas), angka itu
+// harus "nembus" lewat constructor: Stage15MainPage -> Stage15HomePage ->
+// FavoriteSummaryBar. Ini contoh nyata prop drilling: semakin dalam widget
+// tree, semakin banyak constructor yang harus meneruskan data yang sama.
 class FavoriteSummaryBar extends StatelessWidget {
   final int favoriteCount;
   const FavoriteSummaryBar({super.key, required this.favoriteCount});
@@ -700,7 +704,7 @@ class FavoriteSummaryBar extends StatelessWidget {
   }
 }
 
-//  TAHAP 15: MINI PROJECT INTEGRASI 
+// ===================== TAHAP 15: MINI PROJECT INTEGRASI =====================
 
 class Stage15MainPage extends StatefulWidget {
   const Stage15MainPage({super.key});
@@ -811,10 +815,23 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (idx) =>
                     setState(() => selectedIndex = idx),
-                destinations: const [
-                  NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-                  NavigationDestination(icon: Icon(Icons.school), label: 'Courses'),
-                  NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+                destinations: [
+                  const NavigationDestination(
+                      icon: Icon(Icons.home), label: 'Home'),
+                  // Tahap 3: widget KEDUA yang menampilkan favoriteCount.
+                  // Sumbernya sama persis dengan FavoriteSummaryBar di Home
+                  // (single source of truth: courses milik Stage15MainPage),
+                  // sehingga keduanya WAJIB selalu konsisten.
+                  NavigationDestination(
+                    icon: Badge(
+                      label: Text('$favoriteCount'),
+                      isLabelVisible: favoriteCount > 0,
+                      child: const Icon(Icons.school),
+                    ),
+                    label: 'Courses',
+                  ),
+                  const NavigationDestination(
+                      icon: Icon(Icons.person), label: 'Profile'),
                 ],
               ),
             );
@@ -828,12 +845,18 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                   onDestinationSelected: (idx) =>
                       setState(() => selectedIndex = idx),
                   labelType: NavigationRailLabelType.all,
-                  destinations: const [
-                    NavigationRailDestination(
+                  destinations: [
+                    const NavigationRailDestination(
                         icon: Icon(Icons.home), label: Text('Home')),
                     NavigationRailDestination(
-                        icon: Icon(Icons.school), label: Text('Courses')),
-                    NavigationRailDestination(
+                      icon: Badge(
+                        label: Text('$favoriteCount'),
+                        isLabelVisible: favoriteCount > 0,
+                        child: const Icon(Icons.school),
+                      ),
+                      label: const Text('Courses'),
+                    ),
+                    const NavigationRailDestination(
                         icon: Icon(Icons.person), label: Text('Profile')),
                   ],
                 ),
@@ -935,7 +958,7 @@ class Stage15ProfileFeedbackPage extends StatelessWidget {
   }
 }
 
-//  TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) 
+// ===================== TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) =====================
 
 class Stage16MainPage extends StatefulWidget {
   const Stage16MainPage({super.key});
