@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'course_provider.dart';
 
 // Identitas Mahasiswa Global
 const String studentName = 'Achmad Dhanil Ahkam';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//  REUSABLE WIDGETS 
+// ===================== REUSABLE WIDGETS =====================
 
 class StudentHeaderWidget extends StatelessWidget {
   final String title;
@@ -75,7 +76,7 @@ class StudentHeaderWidget extends StatelessWidget {
   }
 }
 
-//  Tahap 1 (Pertemuan 6): local state expand/collapse 
+// ===================== Tahap 1 (Pertemuan 6): local state expand/collapse =====================
 // CourseCardWidget diubah dari StatelessWidget menjadi StatefulWidget supaya
 // bisa menyimpan local state `isExpanded`, yang HANYA relevan untuk card ini
 // sendiri (tidak perlu dan tidak boleh dikelola lewat Provider/shared state).
@@ -222,7 +223,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
   }
 }
 
-//  MENU UTAMA NAVIGASI 
+// ===================== MENU UTAMA NAVIGASI =====================
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -326,7 +327,7 @@ class MainMenuPage extends StatelessWidget {
   }
 }
 
-//  TAHAP 1 SAMPAI 14 (SUB-PAGES) 
+// ===================== TAHAP 1 SAMPAI 14 (SUB-PAGES) =====================
 
 class ResponsiveProblemPage extends StatelessWidget {
   const ResponsiveProblemPage({super.key});
@@ -669,7 +670,7 @@ class Stage14MainPage extends StatelessWidget {
   }
 }
 
-//  Tahap 2 (Pertemuan 6): Demo Prop Drilling 
+// ===================== Tahap 2 (Pertemuan 6): Demo Prop Drilling =====================
 // Widget kecil ini HANYA butuh satu angka (jumlah favorite), tapi karena
 // datanya dimiliki oleh Stage15MainPage (parent paling atas), angka itu
 // harus "nembus" lewat constructor: Stage15MainPage -> Stage15HomePage ->
@@ -704,7 +705,7 @@ class FavoriteSummaryBar extends StatelessWidget {
   }
 }
 
-//  TAHAP 15: MINI PROJECT INTEGRASI 
+// ===================== TAHAP 15: MINI PROJECT INTEGRASI =====================
 
 class Stage15MainPage extends StatefulWidget {
   const Stage15MainPage({super.key});
@@ -716,79 +717,42 @@ class Stage15MainPage extends StatefulWidget {
 class _Stage15MainPageState extends State<Stage15MainPage> {
   int selectedIndex = 0;
 
-  final List<Map<String, dynamic>> courses = [
-    {
-      'id': '1',
-      'code': 'MOB01',
-      'title': 'Responsive Layout & Grid',
-      'credits': 3,
-      'category': 'Mobile Web',
-      'status': 'Active',
-      'isFavorite': false,
-      'description':
-          'Mempelajari pembentukan antarmuka yang responsif dengan MediaQuery, LayoutBuilder, Flex, Wrap, dan GridView dinamis pada berbagai ukuran layar.',
-    },
-    {
-      'id': '2',
-      'code': 'MOB02',
-      'title': 'Navigation & Adaptive Shell',
-      'credits': 2,
-      'category': 'Architecture',
-      'status': 'Active',
-      'isFavorite': true,
-      'description':
-          'Penerapan shell navigasi adaptif menggunakan NavigationBar pada layar sempit dan NavigationRail pada layar lebar beserta passing data.',
-    },
-    {
-      'id': '3',
-      'code': 'MOB03',
-      'title': 'Form Validation & Feedback',
-      'credits': 3,
-      'category': 'User Interaction',
-      'status': 'Planned',
-      'isFavorite': false,
-      'description':
-          'Pengelolaan form interaktif dengan GlobalKey<FormState>, validasi input, serta umpan balik pengguna berupa SnackBar, Dialog, dan Loading State.',
-    },
-    {
-      'id': '4',
-      'code': 'MOB04',
-      'title': 'Git Version Control System',
-      'credits': 2,
-      'category': 'DevOps',
-      'status': 'Done',
-      'isFavorite': false,
-      'description':
-          'Manajemen repositori Git, commit bertahap, pengelolaan branch, dan sinking project ke remote GitHub secara terstruktur.',
-    },
-    {
-      'id': '5',
-      'code': 'MOB05',
-      'title': 'Dart Asynchronous Programming',
-      'credits': 2,
-      'category': 'Core Language',
-      'status': 'Done',
-      'isFavorite': true,
-      'description':
-          'Konsep pemrosesan data asynchronous pada Dart menggunakan Future, async/await, dan simulasi penanganan API.',
-    },
-  ];
+  // Tahap 5: courses dan logic favorite sekarang dimiliki oleh CourseProvider
+  // (ChangeNotifier), bukan lagi field State biasa. Package `provider` BELUM
+  // dipasang (itu Tahap 6), jadi untuk sekarang kita uji notifyListeners()
+  // secara manual dengan addListener().
+  final CourseProvider courseProvider = CourseProvider();
+
+  @override
+  void initState() {
+    super.initState();
+    // Setiap kali CourseProvider memanggil notifyListeners(), callback ini
+    // dijalankan. Kita panggil setState() kosong di sini supaya
+    // Stage15MainPage ikut rebuild dan menampilkan data terbaru.
+    courseProvider.addListener(_onCourseProviderChanged);
+  }
+
+  void _onCourseProviderChanged() {
+    setState(() {}); // tidak ada data baru yang disimpan di sini,
+    // kita cuma minta Flutter membangun ulang build() karena
+    // courseProvider.courses sudah berubah di tempat lain (di dalam
+    // CourseProvider sendiri).
+  }
+
+  @override
+  void dispose() {
+    courseProvider.removeListener(_onCourseProviderChanged);
+    super.dispose();
+  }
 
   void toggleFavorite(int index) {
-    setState(() {
-      courses[index]['isFavorite'] = !(courses[index]['isFavorite'] as bool);
-    });
+    courseProvider.toggleFavorite(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Tahap 2: favoriteCount dihitung di sini (parent/single source of truth),
-    // lalu harus diteruskan manual lewat constructor ke Stage15HomePage,
-    // yang nanti meneruskannya LAGI ke FavoriteSummaryBar. Setiap child baru
-    // yang butuh angka ini berarti satu parameter constructor baru di
-    // sepanjang rantai widget tree -> inilah prop drilling.
-    final int favoriteCount =
-        courses.where((c) => c['isFavorite'] == true).length;
+    final List<Map<String, dynamic>> courses = courseProvider.courses;
+    final int favoriteCount = courseProvider.favoriteCount;
 
     final List<Widget> pages = [
       Stage15HomePage(
@@ -968,8 +932,13 @@ class Stage15ProfileFeedbackPage extends StatelessWidget {
   }
 }
 
-//  Tahap 4 (Pertemuan 6): ValueNotifier 
-
+// ===================== Tahap 4 (Pertemuan 6): ValueNotifier =====================
+// ValueNotifier cocok untuk SATU nilai sederhana yang ingin dipantau tanpa
+// membungkus seluruh parent dengan setState(). Bedanya dengan setState():
+// - setState() pada StatefulWidget membangun ulang SELURUH build() method
+//   widget itu (bisa jadi banyak widget di dalamnya ikut rebuild).
+// - ValueNotifier + ValueListenableBuilder hanya membangun ulang widget
+//   KECIL di dalam builder-nya saja, jadi lebih hemat/presisi.
 class ValueNotifierDemo extends StatefulWidget {
   const ValueNotifierDemo({super.key});
 
@@ -978,6 +947,9 @@ class ValueNotifierDemo extends StatefulWidget {
 }
 
 class _ValueNotifierDemoState extends State<ValueNotifierDemo> {
+  // ValueNotifier<int> menyimpan satu nilai (di sini: simulasi jumlah
+  // favorite) dan otomatis memberi tahu listener-nya saat .value berubah,
+  // tanpa perlu setState() di widget ini sendiri.
   final ValueNotifier<int> favoriteCounter = ValueNotifier<int>(0);
 
   @override
@@ -1001,6 +973,9 @@ class _ValueNotifierDemoState extends State<ValueNotifierDemo> {
             const SizedBox(height: 4),
             Text('$studentId - $studentName'),
             const SizedBox(height: 12),
+            // ValueListenableBuilder mendengarkan favoriteCounter dan HANYA
+            // membangun ulang Text ini saja saat value berubah, bukan
+            // seluruh ValueNotifierDemo.
             ValueListenableBuilder<int>(
               valueListenable: favoriteCounter,
               builder: (context, value, child) {
@@ -1032,7 +1007,7 @@ class _ValueNotifierDemoState extends State<ValueNotifierDemo> {
   }
 }
 
-//  TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) 
+// ===================== TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) =====================
 
 class Stage16MainPage extends StatefulWidget {
   const Stage16MainPage({super.key});
