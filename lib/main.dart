@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_ui_fundamentals/course_provider.dart';
-import 'package:flutter_ui_fundamentals/models/course.dart';
-import 'package:flutter_ui_fundamentals/services/course_service.dart';
+import 'course_provider.dart';
+import 'models/course.dart';
+import 'services/course_service.dart';
+import 'repositories/course_repository.dart';
 
 // Identitas Mahasiswa Global
 const String studentName = 'Achmad Dhanil Ahkam';
 const String studentId = '2415051049';
 
 void main() async {
-  // Tahap 9: uji CourseService secara terpisah dulu lewat debugPrint,
-  // sebelum nanti di Tahap 10-11 benar-benar dipakai oleh Provider.
+  // Tahap 10: Uji CourseRepository yang membungkus CourseService lewat debugPrint
   WidgetsFlutterBinding.ensureInitialized();
-  final testCourses = await CourseService().loadCourses();
-  debugPrint('Tahap 9 - CourseService berhasil memuat ${testCourses.length} '
+  final courseService = CourseService();
+  final courseRepository = CourseRepository(courseService);
+  final testCourses = await courseRepository.getCourses();
+  debugPrint(
+      'Tahap 10 - CourseRepository berhasil mengambil ${testCourses.length} '
       'course. Judul pertama: ${testCourses.first.title}');
 
   runApp(
