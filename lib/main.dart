@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ===================== REUSABLE WIDGETS =====================
+//  REUSABLE WIDGETS 
 
 class StudentHeaderWidget extends StatelessWidget {
   final String title;
@@ -75,7 +75,7 @@ class StudentHeaderWidget extends StatelessWidget {
   }
 }
 
-// ===================== Tahap 1 (Pertemuan 6): local state expand/collapse =====================
+//  Tahap 1 (Pertemuan 6): local state expand/collapse 
 // CourseCardWidget diubah dari StatelessWidget menjadi StatefulWidget supaya
 // bisa menyimpan local state `isExpanded`, yang HANYA relevan untuk card ini
 // sendiri (tidak perlu dan tidak boleh dikelola lewat Provider/shared state).
@@ -222,7 +222,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
   }
 }
 
-// ===================== MENU UTAMA NAVIGASI =====================
+//  MENU UTAMA NAVIGASI 
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -326,7 +326,7 @@ class MainMenuPage extends StatelessWidget {
   }
 }
 
-// ===================== TAHAP 1 SAMPAI 14 (SUB-PAGES) =====================
+//  TAHAP 1 SAMPAI 14 (SUB-PAGES) 
 
 class ResponsiveProblemPage extends StatelessWidget {
   const ResponsiveProblemPage({super.key});
@@ -669,7 +669,38 @@ class Stage14MainPage extends StatelessWidget {
   }
 }
 
-// ===================== TAHAP 15: MINI PROJECT INTEGRASI =====================
+//  Tahap 2 (Pertemuan 6): Demo Prop Drilling 
+
+class FavoriteSummaryBar extends StatelessWidget {
+  final int favoriteCount;
+  const FavoriteSummaryBar({super.key, required this.favoriteCount});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.red.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.red.shade200),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.favorite, color: Colors.red, size: 18),
+          const SizedBox(width: 8),
+          Text(
+            '$favoriteCount course ditandai favorite',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//  TAHAP 15: MINI PROJECT INTEGRASI 
 
 class Stage15MainPage extends StatefulWidget {
   const Stage15MainPage({super.key});
@@ -747,8 +778,20 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Tahap 2: favoriteCount dihitung di sini (parent/single source of truth),
+    // lalu harus diteruskan manual lewat constructor ke Stage15HomePage,
+    // yang nanti meneruskannya LAGI ke FavoriteSummaryBar. Setiap child baru
+    // yang butuh angka ini berarti satu parameter constructor baru di
+    // sepanjang rantai widget tree -> inilah prop drilling.
+    final int favoriteCount =
+        courses.where((c) => c['isFavorite'] == true).length;
+
     final List<Widget> pages = [
-      Stage15HomePage(courses: courses, onFavoriteToggle: toggleFavorite),
+      Stage15HomePage(
+        courses: courses,
+        onFavoriteToggle: toggleFavorite,
+        favoriteCount: favoriteCount,
+      ),
       Stage15CoursesPage(courses: courses, onFavoriteToggle: toggleFavorite),
       const Stage15ProfileFeedbackPage(),
     ];
@@ -808,11 +851,16 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
 class Stage15HomePage extends StatelessWidget {
   final List<Map<String, dynamic>> courses;
   final Function(int) onFavoriteToggle;
+  // Tahap 2: parameter ini HANYA diteruskan lagi ke FavoriteSummaryBar,
+  // Stage15HomePage sendiri tidak memakainya untuk logika apa pun selain
+  // meneruskan -> ini "bau" khas prop drilling.
+  final int favoriteCount;
 
   const Stage15HomePage({
     super.key,
     required this.courses,
     required this.onFavoriteToggle,
+    required this.favoriteCount,
   });
 
   @override
@@ -824,6 +872,9 @@ class Stage15HomePage extends StatelessWidget {
         children: [
           const StudentHeaderWidget(title: 'Course Explorer Home'),
           const SizedBox(height: 16),
+          // Tahap 2: FavoriteSummaryBar menerima data yang sebenarnya
+          // "milik" Stage15MainPage, hanya lewat lewat Stage15HomePage.
+          FavoriteSummaryBar(favoriteCount: favoriteCount),
           const Text('Course Favorit:',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
@@ -884,7 +935,7 @@ class Stage15ProfileFeedbackPage extends StatelessWidget {
   }
 }
 
-// ===================== TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) =====================
+//  TAHAP 16: DEBUGGING CHALLENGE (TEMA BIRU) 
 
 class Stage16MainPage extends StatefulWidget {
   const Stage16MainPage({super.key});
