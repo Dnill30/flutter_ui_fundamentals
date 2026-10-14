@@ -1,81 +1,173 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/course.dart';
 import '../providers/course_provider.dart';
-import '../widgets/student_header.dart';
 import '../widgets/course_card.dart';
-import '../widgets/favorite_summary.dart';
 import 'course_detail_page.dart';
 
-class Stage15HomePage extends StatelessWidget {
-  const Stage15HomePage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CourseProvider>();
 
     if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (provider.error != null) {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Error: ${provider.error}',
-                style: const TextStyle(color: Colors.red)),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () => provider.loadCourses(),
-              child: const Text('Coba Lagi'),
-            ),
+            CircularProgressIndicator(),
+            SizedBox(height: 12),
+            Text('Memuat data course...'),
           ],
         ),
       );
     }
 
-    final List<Course> favCourses = provider.favoriteCourses;
+    if (provider.error != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 48),
+              const SizedBox(height: 12),
+              Text(
+                'Gagal memuat data: ${provider.error}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => provider.loadCourses(),
+                child: const Text('Coba Lagi'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final courses = provider.courses;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const StudentHeaderWidget(title: 'Course Explorer Home'),
-          const SizedBox(height: 16),
-          FavoriteSummaryBar(favoriteCount: provider.favoriteCount),
-          const Text('Course Favorit:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          if (favCourses.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Center(
-                child: Text('Belum ada course favorit.',
-                    style: TextStyle(color: Colors.grey)),
+          // Identitas Mahasiswa (Poin 63 Tahap 14)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.blue.shade100),
+            ),
+            child: const Text(
+              '2415051049 • Achmad Dhanil Ahkam',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1976D2),
               ),
-            )
-          else
-            for (var course in favCourses)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: CourseCardWidget(
-                  course: course,
-                  isFavorite: true,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CourseDetailPage(course: course),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Cards Statistik Courses & Favorites
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.blue.shade100),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Courses',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600),
                       ),
-                    );
-                  },
-                  onFavoriteToggle: () {
-                    context.read<CourseProvider>().toggleFavorite(course.code);
-                  },
+                      const SizedBox(height: 6),
+                      Text(
+                        '${courses.length}',
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1976D2),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.blue.shade100),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Favorites',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        '${provider.favoriteCount}',
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1976D2),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // Daftar Card Course
+          for (var course in courses)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: CourseCardWidget(
+                course: course,
+                isFavorite: provider.isFavorite(course.code),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CourseDetailPage(course: course),
+                    ),
+                  );
+                },
+                onFavoriteToggle: () {
+                  provider.toggleFavorite(course.code);
+                },
+              ),
+            ),
         ],
       ),
     );

@@ -12,44 +12,37 @@ class FavoritesPage extends StatelessWidget {
     final provider = context.watch<CourseProvider>();
     final favCourses = provider.favoriteCourses;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Course Favorit Saya'),
-        backgroundColor: const Color(0xFF1976D2),
-        foregroundColor: Colors.white,
-      ),
-      body: favCourses.isEmpty
-          ? const Center(
-              child: Text(
-                'Belum ada course yang ditandai favorit.',
-                style: TextStyle(color: Colors.grey, fontSize: 15),
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: favCourses.length,
-              itemBuilder: (context, index) {
-                final course = favCourses[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: CourseCardWidget(
-                    course: course,
-                    isFavorite: true,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CourseDetailPage(course: course),
-                        ),
-                      );
-                    },
-                    onFavoriteToggle: () {
-                      provider.toggleFavorite(course.code);
-                    },
-                  ),
-                );
-              },
+    return favCourses.isEmpty
+        ? const Center(
+            child: Text(
+              'Belum ada course yang ditandai favorit.',
+              style: TextStyle(color: Colors.grey, fontSize: 15),
             ),
-    );
+          )
+        : ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: favCourses.length,
+            itemBuilder: (context, index) {
+              final course = favCourses[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: CourseCardWidget(
+                  course: course,
+                  isFavorite: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CourseDetailPage(course: course),
+                      ),
+                    );
+                  },
+                  onFavoriteToggle: () {
+                    provider.toggleFavorite(course.code);
+                  },
+                ),
+              );
+            },
+          );
   }
 }

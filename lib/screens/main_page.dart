@@ -3,23 +3,22 @@ import 'package:provider/provider.dart';
 import '../providers/course_provider.dart';
 import 'home_page.dart';
 import 'courses_page.dart';
-import 'profile_page.dart';
 import 'favorites_page.dart';
 
-class Stage15MainPage extends StatefulWidget {
-  const Stage15MainPage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<Stage15MainPage> createState() => _Stage15MainPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _Stage15MainPageState extends State<Stage15MainPage> {
+class _MainPageState extends State<MainPage> {
   int selectedIndex = 0;
 
   final List<Widget> pages = const [
-    Stage15HomePage(),
-    Stage15CoursesPage(),
-    Stage15ProfileFeedbackPage(),
+    HomePage(),
+    CoursesPage(),
+    FavoritesPage(),
   ];
 
   @override
@@ -29,27 +28,13 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Course Explorer'),
+        title: const Text('Course Explorer v2'),
         backgroundColor: const Color(0xFF1976D2),
         foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: Badge(
-              label: Text('$favoriteCount'),
-              isLabelVisible: favoriteCount > 0,
-              child: const Icon(Icons.favorite),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const FavoritesPage()),
-              );
-            },
-          ),
-        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
+          // Responsive Navigation untuk Mobile
           if (constraints.maxWidth < 840) {
             return Scaffold(
               body: pages[selectedIndex],
@@ -59,22 +44,31 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                     setState(() => selectedIndex = idx),
                 destinations: [
                   const NavigationDestination(
-                      icon: Icon(Icons.home), label: 'Home'),
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
                   NavigationDestination(
                     icon: Badge(
-                      label: Text('$favoriteCount'),
-                      isLabelVisible: favoriteCount > 0,
+                      label: Text('${courseProvider.courses.length}'),
+                      isLabelVisible: courseProvider.courses.isNotEmpty,
                       child: const Icon(Icons.school),
                     ),
                     label: 'Courses',
                   ),
-                  const NavigationDestination(
-                      icon: Icon(Icons.person), label: 'Profile'),
+                  NavigationDestination(
+                    icon: Badge(
+                      label: Text('$favoriteCount'),
+                      isLabelVisible: favoriteCount > 0,
+                      child: const Icon(Icons.favorite),
+                    ),
+                    label: 'Favorites',
+                  ),
                 ],
               ),
             );
           }
 
+          // Responsive Navigation untuk Desktop/Tablet
           return Scaffold(
             body: Row(
               children: [
@@ -85,17 +79,25 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
                   labelType: NavigationRailLabelType.all,
                   destinations: [
                     const NavigationRailDestination(
-                        icon: Icon(Icons.home), label: Text('Home')),
+                      icon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
                     NavigationRailDestination(
                       icon: Badge(
-                        label: Text('$favoriteCount'),
-                        isLabelVisible: favoriteCount > 0,
+                        label: Text('${courseProvider.courses.length}'),
+                        isLabelVisible: courseProvider.courses.isNotEmpty,
                         child: const Icon(Icons.school),
                       ),
                       label: const Text('Courses'),
                     ),
-                    const NavigationRailDestination(
-                        icon: Icon(Icons.person), label: Text('Profile')),
+                    NavigationRailDestination(
+                      icon: Badge(
+                        label: Text('$favoriteCount'),
+                        isLabelVisible: favoriteCount > 0,
+                        child: const Icon(Icons.favorite),
+                      ),
+                      label: const Text('Favorites'),
+                    ),
                   ],
                 ),
                 const VerticalDivider(width: 1, thickness: 1),

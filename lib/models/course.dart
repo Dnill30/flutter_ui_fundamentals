@@ -20,7 +20,7 @@ class Course {
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {
-    String rawStatus = json['status']?.toString() ?? 'Active';
+    String rawStatus = json['status']?.toString() ?? 'active';
     String formattedStatus = rawStatus.isNotEmpty
         ? rawStatus[0].toUpperCase() + rawStatus.substring(1)
         : 'Active';

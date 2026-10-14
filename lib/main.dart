@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Course Explorer',
+      title: 'Course Explorer v2',
       theme: ThemeData(
         useMaterial3: true,
         primaryColor: const Color(0xFF1976D2),
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           seedColor: const Color(0xFF1976D2),
         ),
       ),
-      home: const Stage15MainPage(),
+      home: const MainPage(),
     );
   }
 }

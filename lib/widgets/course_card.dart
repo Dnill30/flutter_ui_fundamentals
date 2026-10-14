@@ -24,8 +24,6 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final String status = widget.course.status;
-
     return Material(
       color: Colors.white,
       elevation: 2,
@@ -37,13 +35,13 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade100,
                       borderRadius: BorderRadius.circular(6),
@@ -69,9 +67,10 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                       ),
                       IconButton(
                         icon: Icon(
-                          widget.isFavorite ? Icons.favorite : Icons.favorite_border,
+                          widget.isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
                           color: widget.isFavorite ? Colors.red : Colors.grey,
-                          size: 24,
                         ),
                         onPressed: widget.onFavoriteToggle,
                       ),
@@ -82,16 +81,12 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
               const SizedBox(height: 8),
               Text(
                 widget.course.title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               Text(
-                '${widget.course.credits} SKS • Category: ${widget.course.category}',
+                '${widget.course.credits} SKS • Kategori: ${widget.course.category}',
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 8),
@@ -102,16 +97,16 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                     height: 8,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: status == 'Active'
+                      color: widget.course.status.toLowerCase() == 'active'
                           ? Colors.orange
-                          : status == 'Done'
+                          : widget.course.status.toLowerCase() == 'done'
                               ? Colors.green
                               : Colors.blue,
                     ),
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Status: $status',
+                    'Status: ${widget.course.status.toLowerCase()}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,

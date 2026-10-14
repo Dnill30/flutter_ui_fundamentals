@@ -5,8 +5,8 @@ import '../providers/course_provider.dart';
 import '../widgets/course_card.dart';
 import 'course_detail_page.dart';
 
-class Stage15CoursesPage extends StatelessWidget {
-  const Stage15CoursesPage({super.key});
+class CoursesPage extends StatelessWidget {
+  const CoursesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
