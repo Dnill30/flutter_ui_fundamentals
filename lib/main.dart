@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'course_provider.dart';
+import 'models/course.dart';
 
 // Identitas Mahasiswa Global
 const String studentName = 'Achmad Dhanil Ahkam';
 const String studentId = '2415051049';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    // Tahap 6: ChangeNotifierProvider "memasang" satu instance CourseProvider
+    // ke widget tree, sehingga seluruh widget DI BAWAH-nya bisa mengakses
+    // object CourseProvider yang SAMA lewat context (context.watch/read),
+    // tanpa harus diteruskan manual lewat constructor (ini solusi untuk
+    // prop drilling di Tahap 2).
+    ChangeNotifierProvider(
+      create: (context) => CourseProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -717,49 +729,30 @@ class Stage15MainPage extends StatefulWidget {
 class _Stage15MainPageState extends State<Stage15MainPage> {
   int selectedIndex = 0;
 
-  // Tahap 5: courses dan logic favorite sekarang dimiliki oleh CourseProvider
-  // (ChangeNotifier), bukan lagi field State biasa. Package `provider` BELUM
-  // dipasang (itu Tahap 6), jadi untuk sekarang kita uji notifyListeners()
-  // secara manual dengan addListener().
-  final CourseProvider courseProvider = CourseProvider();
-
-  @override
-  void initState() {
-    super.initState();
-    // Setiap kali CourseProvider memanggil notifyListeners(), callback ini
-    // dijalankan. Kita panggil setState() kosong di sini supaya
-    // Stage15MainPage ikut rebuild dan menampilkan data terbaru.
-    courseProvider.addListener(_onCourseProviderChanged);
-  }
-
-  void _onCourseProviderChanged() {
-    setState(() {}); // tidak ada data baru yang disimpan di sini,
-    // kita cuma minta Flutter membangun ulang build() karena
-    // courseProvider.courses sudah berubah di tempat lain (di dalam
-    // CourseProvider sendiri).
-  }
-
-  @override
-  void dispose() {
-    courseProvider.removeListener(_onCourseProviderChanged);
-    super.dispose();
-  }
-
+  // Tahap 7: toggleFavorite memakai context.read<CourseProvider>() karena
+  // ini dipanggil dari dalam callback (saat tombol ditekan), BUKAN di dalam
+  // build(). read() mengambil object TANPA mendaftar sebagai listener,
+  // cocok untuk memicu aksi sekali jalan seperti ini.
   void toggleFavorite(int index) {
-    courseProvider.toggleFavorite(index);
+    context.read<CourseProvider>().toggleFavorite(index);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Tahap 7: context.watch<CourseProvider>() mendaftarkan Stage15MainPage
+    // sebagai listener CourseProvider. Setiap kali notifyListeners()
+    // dipanggil (misalnya dari toggleFavorite), Flutter otomatis membangun
+    // ulang build() ini -- menggantikan addListener() manual dari Tahap 5.
+    final courseProvider = context.watch<CourseProvider>();
     final List<Map<String, dynamic>> courses = courseProvider.courses;
     final int favoriteCount = courseProvider.favoriteCount;
 
     final List<Widget> pages = [
-      Stage15HomePage(
-        courses: courses,
-        onFavoriteToggle: toggleFavorite,
-        favoriteCount: favoriteCount,
-      ),
+      // Tahap 7: favoriteCount TIDAK lagi diteruskan lewat constructor ke
+      // Stage15HomePage (lihat perubahan di Stage15HomePage: FavoriteSummaryBar
+      // sekarang dibungkus Consumer dan ambil datanya sendiri dari context).
+      // Ini menghilangkan prop drilling yang didemokan di Tahap 2.
+      Stage15HomePage(courses: courses, onFavoriteToggle: toggleFavorite),
       Stage15CoursesPage(courses: courses, onFavoriteToggle: toggleFavorite),
       const Stage15ProfileFeedbackPage(),
     ];
@@ -841,16 +834,11 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
 class Stage15HomePage extends StatelessWidget {
   final List<Map<String, dynamic>> courses;
   final Function(int) onFavoriteToggle;
-  // Tahap 2: parameter ini HANYA diteruskan lagi ke FavoriteSummaryBar,
-  // Stage15HomePage sendiri tidak memakainya untuk logika apa pun selain
-  // meneruskan -> ini "bau" khas prop drilling.
-  final int favoriteCount;
-
+  // (Tahap 7: favoriteCount dihapus dari sini, lihat Consumer di build())
   const Stage15HomePage({
     super.key,
     required this.courses,
     required this.onFavoriteToggle,
-    required this.favoriteCount,
   });
 
   @override
@@ -862,9 +850,18 @@ class Stage15HomePage extends StatelessWidget {
         children: [
           const StudentHeaderWidget(title: 'Course Explorer Home'),
           const SizedBox(height: 16),
-          // Tahap 2: FavoriteSummaryBar menerima data yang sebenarnya
-          // "milik" Stage15MainPage, hanya lewat lewat Stage15HomePage.
-          FavoriteSummaryBar(favoriteCount: favoriteCount),
+          // Tahap 7: Consumer membatasi area rebuild hanya pada bagian
+          // kecil ini saja. FavoriteSummaryBar sekarang mengambil
+          // favoriteCount langsung dari CourseProvider lewat context,
+          // TIDAK lagi lewat constructor Stage15HomePage -- prop drilling
+          // dari Tahap 2 sudah hilang di sini.
+          Consumer<CourseProvider>(
+            builder: (context, provider, child) {
+              return FavoriteSummaryBar(
+                favoriteCount: provider.favoriteCount,
+              );
+            },
+          ),
           const Text('Course Favorit:',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
@@ -926,7 +923,61 @@ class Stage15ProfileFeedbackPage extends StatelessWidget {
           StudentHeaderWidget(title: 'Profil Mahasiswa'),
           SizedBox(height: 20),
           ValueNotifierDemo(),
+          SizedBox(height: 20),
+          CourseModelDemo(),
         ],
+      ),
+    );
+  }
+}
+
+// Tahap 8: demo konversi satu data JSON (Map) menjadi object Course lewat
+// Course.fromJson(), lalu ditampilkan ke UI lewat properti bertipe jelas
+// (course.title, course.credits, dst), bukan lagi course['title'].
+class CourseModelDemo extends StatelessWidget {
+  const CourseModelDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Data mentah seolah-olah datang dari JSON (masih berupa Map).
+    final Map<String, dynamic> rawJson = {
+      'id': '1',
+      'code': 'MOB01',
+      'title': 'Responsive Layout & Grid',
+      'credits': 3,
+      'category': 'Mobile Web',
+      'status': 'Active',
+      'isFavorite': false,
+      'description':
+          'Mempelajari pembentukan antarmuka yang responsif dengan '
+          'MediaQuery, LayoutBuilder, Flex, Wrap, dan GridView dinamis.',
+    };
+
+    // Konversi Map -> Course lewat factory constructor.
+    final Course course = Course.fromJson(rawJson);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Model Course Demo',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 4),
+            Text('$studentId - $studentName'),
+            const SizedBox(height: 12),
+            // Semua ini diakses lewat properti object (course.title),
+            // bukan key string (rawJson['title']) -- lebih aman dari typo
+            // dan diperiksa tipe datanya oleh compiler Dart.
+            Text('Judul : ${course.title}'),
+            Text('Kode  : ${course.code}'),
+            Text('SKS   : ${course.credits}'),
+            Text('Status: ${course.status}'),
+          ],
+        ),
       ),
     );
   }
