@@ -3,14 +3,18 @@ import 'package:flutter/services.dart';
 import '../models/course.dart';
 
 class CourseService {
-  Future<List<Course>> loadCourses() async {
-    final jsonString = await rootBundle.loadString(
-      'assets/data/student_data.json',
-    );
-    final data = jsonDecode(jsonString) as Map<String, dynamic>;
-    final list = data['courses'] as List<dynamic>;
-    return list
-        .map((e) => Course.fromJson(e as Map<String, dynamic>))
+  Future<List<Course>> fetchCourses() async {
+    final String response =
+        await rootBundle.loadString('assets/data/student_data.json');
+    
+    // Decode ke Map, BUKAN List
+    final Map<String, dynamic> data = json.decode(response);
+    
+    // Ambil array yang ada di dalam key "courses"
+    final List<dynamic> courseList = data['courses'] ?? [];
+
+    return courseList
+        .map((json) => Course.fromJson(json as Map<String, dynamic>))
         .toList();
   }
 }

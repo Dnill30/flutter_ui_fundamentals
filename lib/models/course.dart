@@ -6,7 +6,7 @@ class Course {
   final String category;
   final String status;
   bool isFavorite;
-  final String? description;
+  final String description;
 
   Course({
     required this.id,
@@ -16,23 +16,31 @@ class Course {
     required this.category,
     required this.status,
     this.isFavorite = false,
-    this.description,
+    required this.description,
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {
+    // Formatting status: 'active' -> 'Active', 'done' -> 'Done'
+    String rawStatus = json['status']?.toString() ?? 'Active';
+    String formattedStatus = rawStatus.isNotEmpty
+        ? rawStatus[0].toUpperCase() + rawStatus.substring(1)
+        : 'Active';
+
     return Course(
-      id: json['id'] as String,
-      code: json['code'] as String,
-      title: json['title'] as String,
-      credits: json['credits'] as int,
-      category: json['category'] as String,
-      status: json['status'] as String,
+      id: json['id']?.toString() ?? json['code']?.toString() ?? '',
+      code: json['code']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      credits: json['credits'] is int
+          ? json['credits'] as int
+          : int.tryParse(json['credits']?.toString() ?? '0') ?? 0,
+      category: json['category']?.toString() ?? 'MKK',
+      status: formattedStatus,
       isFavorite: json['isFavorite'] as bool? ?? false,
-      description: json['description'] as String?,
+      description: json['description']?.toString() ??
+          'Dosen Pengampu: ${json['dosen'] ?? 'Belum ditentukan'}',
     );
   }
 
-  // TAMBAHKAN METHOD TOJSON() INI:
   Map<String, dynamic> toJson() {
     return {
       'id': id,
