@@ -1,17 +1,15 @@
-# flutter_ui_fundamentals
+# Course Explorer v2 - Architecture Documentation
 
-A new Flutter project.
+**Nama:** Achmad Dhanil Ahkam  
+**NIM:** 2415051049  
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Folder Structure & Responsibility Audit
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* **`lib/models/`**: Mendefinisikan struktur data entitas (`Course`) dan konversi JSON (`fromJson`/`toJson`).
+* **`lib/services/`**: Menangani pembacaan data mentah dari `rootBundle` JSON.
+* **`lib/repositories/`**: Abstraksi data perantara antara Service dan Provider.
+* **`lib/providers/`**: Mengelola state aplikasi (`ChangeNotifier`), statistik, dan list favorit.
+* **`lib/screens/`**: Menampilkan UI utama aplikasi secara responsif.
+* **`lib/widgets/`**: Komponen UI yang dapat digunakan kembali (*reusable*).
