@@ -26,7 +26,7 @@ void main() async {
     // tanpa harus diteruskan manual lewat constructor (ini solusi untuk
     // prop drilling di Tahap 2).
     ChangeNotifierProvider(
-      create: (context) => CourseProvider(),
+      create: (context) => CourseProvider(courseRepository),
       child: const MyApp(),
     ),
   );
@@ -101,7 +101,7 @@ class StudentHeaderWidget extends StatelessWidget {
 
 // ===================== Tahap 1 (Pertemuan 6): local state expand/collapse =====================
 class CourseCardWidget extends StatefulWidget {
-  final Map<String, dynamic> course;
+  final Course course;
   final bool isFavorite;
   final VoidCallback onTap;
   final VoidCallback onFavoriteToggle;
@@ -123,7 +123,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final String status = widget.course['status'] as String;
+    final String status = widget.course.status;
 
     return Material(
       color: Colors.white,
@@ -149,7 +149,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      widget.course['code'] as String,
+                      widget.course.code,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
@@ -183,7 +183,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
               ),
               const SizedBox(height: 8),
               Text(
-                widget.course['title'] as String,
+                widget.course.title,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -193,8 +193,8 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
               ),
               const SizedBox(height: 4),
               Text(
-                '${widget.course['credits']} SKS • '
-                'Category: ${widget.course['category']}',
+                '${widget.course.credits} SKS • '
+                'Category: ${widget.course.category}',
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 8),
@@ -227,8 +227,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                 const SizedBox(height: 8),
                 const Divider(),
                 Text(
-                  widget.course['description'] as String? ??
-                      'Tidak ada deskripsi.',
+                  widget.course.description ?? 'Tidak ada deskripsi.',
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
                 ),
               ],
@@ -733,7 +732,7 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
   @override
   Widget build(BuildContext context) {
     final courseProvider = context.watch<CourseProvider>();
-    final List<Map<String, dynamic>> courses = courseProvider.courses;
+    final List<Course> courses = courseProvider.courses;
     final int favoriteCount = courseProvider.favoriteCount;
 
     final List<Widget> pages = [
@@ -810,7 +809,7 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
 }
 
 class Stage15HomePage extends StatelessWidget {
-  final List<Map<String, dynamic>> courses;
+  final List<Course> courses;
   final Function(int) onFavoriteToggle;
 
   const Stage15HomePage({
@@ -839,7 +838,7 @@ class Stage15HomePage extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           for (int i = 0; i < courses.length; i++)
-            if (courses[i]['isFavorite'] as bool)
+            if (courses[i].isFavorite)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: CourseCardWidget(
@@ -856,7 +855,7 @@ class Stage15HomePage extends StatelessWidget {
 }
 
 class Stage15CoursesPage extends StatelessWidget {
-  final List<Map<String, dynamic>> courses;
+  final List<Course> courses;
   final Function(int) onFavoriteToggle;
 
   const Stage15CoursesPage({
@@ -874,7 +873,7 @@ class Stage15CoursesPage extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 12),
         child: CourseCardWidget(
           course: courses[index],
-          isFavorite: courses[index]['isFavorite'] as bool,
+          isFavorite: courses[index].isFavorite,
           onTap: () {},
           onFavoriteToggle: () => onFavoriteToggle(index),
         ),
