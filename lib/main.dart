@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_fundamentals/course_provider.dart';
 import 'package:provider/provider.dart';
 import 'services/course_service.dart';
 import 'repositories/course_repository.dart';
@@ -8,6 +7,7 @@ import 'screens/main_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final courseService = CourseService();
   final courseRepository = CourseRepository(courseService);
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Course Explorer - Modul Praktikum 5',
+      title: 'Course Explorer',
       theme: ThemeData(
         useMaterial3: true,
         primaryColor: const Color(0xFF1976D2),

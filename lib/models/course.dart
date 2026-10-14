@@ -20,7 +20,6 @@ class Course {
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {
-    // Formatting status: 'active' -> 'Active', 'done' -> 'Done'
     String rawStatus = json['status']?.toString() ?? 'Active';
     String formattedStatus = rawStatus.isNotEmpty
         ? rawStatus[0].toUpperCase() + rawStatus.substring(1)
@@ -33,7 +32,7 @@ class Course {
       credits: json['credits'] is int
           ? json['credits'] as int
           : int.tryParse(json['credits']?.toString() ?? '0') ?? 0,
-      category: json['category']?.toString() ?? 'MKK',
+      category: json['category']?.toString() ?? 'Utama',
       status: formattedStatus,
       isFavorite: json['isFavorite'] as bool? ?? false,
       description: json['description']?.toString() ??

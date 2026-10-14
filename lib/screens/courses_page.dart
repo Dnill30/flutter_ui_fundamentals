@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_fundamentals/course_provider.dart';
 import 'package:provider/provider.dart';
 import '../models/course.dart';
+import '../providers/course_provider.dart';
 import '../widgets/course_card.dart';
+import 'course_detail_page.dart';
 
 class Stage15CoursesPage extends StatelessWidget {
   const Stage15CoursesPage({super.key});
@@ -12,40 +13,22 @@ class Stage15CoursesPage extends StatelessWidget {
     final provider = context.watch<CourseProvider>();
 
     if (provider.isLoading) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 12),
-            Text('Memuat data course...'),
-          ],
-        ),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (provider.error != null) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 48),
-              const SizedBox(height: 12),
-              Text(
-                'Gagal memuat data: ${provider.error}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => provider.loadCourses(),
-                child: const Text('Coba Lagi'),
-              ),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error: ${provider.error}',
+                style: const TextStyle(color: Colors.red)),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () => provider.loadCourses(),
+              child: const Text('Coba Lagi'),
+            ),
+          ],
         ),
       );
     }
@@ -55,17 +38,29 @@ class Stage15CoursesPage extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: courses.length,
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: CourseCardWidget(
-          course: courses[index],
-          isFavorite: courses[index].isFavorite,
-          onTap: () {},
-          onFavoriteToggle: () {
-            context.read<CourseProvider>().toggleFavorite(index);
-          },
-        ),
-      ),
+      itemBuilder: (context, index) {
+        final course = courses[index];
+        final isFav = provider.isFavorite(course.code);
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: CourseCardWidget(
+            course: course,
+            isFavorite: isFav,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CourseDetailPage(course: course),
+                ),
+              );
+            },
+            onFavoriteToggle: () {
+              context.read<CourseProvider>().toggleFavorite(course.code);
+            },
+          ),
+        );
+      },
     );
   }
 }

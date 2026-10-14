@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_fundamentals/course_provider.dart';
 import 'package:provider/provider.dart';
+import '../providers/course_provider.dart';
 import 'home_page.dart';
 import 'courses_page.dart';
 import 'profile_page.dart';
+import 'favorites_page.dart';
 
 class Stage15MainPage extends StatefulWidget {
   const Stage15MainPage({super.key});
@@ -31,6 +32,21 @@ class _Stage15MainPageState extends State<Stage15MainPage> {
         title: const Text('Course Explorer'),
         backgroundColor: const Color(0xFF1976D2),
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Badge(
+              label: Text('$favoriteCount'),
+              isLabelVisible: favoriteCount > 0,
+              child: const Icon(Icons.favorite),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FavoritesPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

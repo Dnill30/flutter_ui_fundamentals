@@ -6,15 +6,17 @@ class CourseService {
   Future<List<Course>> fetchCourses() async {
     final String response =
         await rootBundle.loadString('assets/data/student_data.json');
-    
-    // Decode ke Map, BUKAN List
-    final Map<String, dynamic> data = json.decode(response);
-    
-    // Ambil array yang ada di dalam key "courses"
-    final List<dynamic> courseList = data['courses'] ?? [];
+    final dynamic decoded = json.decode(response);
+
+    List<dynamic> courseList = [];
+    if (decoded is Map<String, dynamic>) {
+      courseList = decoded['courses'] ?? [];
+    } else if (decoded is List) {
+      courseList = decoded;
+    }
 
     return courseList
-        .map((json) => Course.fromJson(json as Map<String, dynamic>))
+        .map((item) => Course.fromJson(item as Map<String, dynamic>))
         .toList();
   }
 }
