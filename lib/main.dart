@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
           seedColor: const Color(0xFF1976D2),
         ),
       ),
-      home: const MainMenuPage(),
+      // Langsung buka Course Explorer (hasil akhir), tidak lewat menu lagi.
+      home: const Stage15MainPage(),
     );
   }
 }
@@ -74,7 +75,11 @@ class StudentHeaderWidget extends StatelessWidget {
   }
 }
 
-class CourseCardWidget extends StatelessWidget {
+// ===================== Tahap 1 (Pertemuan 6): local state expand/collapse =====================
+// CourseCardWidget diubah dari StatelessWidget menjadi StatefulWidget supaya
+// bisa menyimpan local state `isExpanded`, yang HANYA relevan untuk card ini
+// sendiri (tidak perlu dan tidak boleh dikelola lewat Provider/shared state).
+class CourseCardWidget extends StatefulWidget {
   final Map<String, dynamic> course;
   final bool isFavorite;
   final VoidCallback onTap;
@@ -89,8 +94,16 @@ class CourseCardWidget extends StatelessWidget {
   });
 
   @override
+  State<CourseCardWidget> createState() => _CourseCardWidgetState();
+}
+
+class _CourseCardWidgetState extends State<CourseCardWidget> {
+  // Tahap 1: local state, hanya memengaruhi tampilan card ini sendiri.
+  bool isExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final String status = course['status'] as String;
+    final String status = widget.course['status'] as String;
 
     return Material(
       color: Colors.white,
@@ -98,7 +111,7 @@ class CourseCardWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
+        onTap: widget.onTap,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -109,14 +122,14 @@ class CourseCardWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade100,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      course['code'] as String,
+                      widget.course['code'] as String,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
@@ -124,19 +137,34 @@ class CourseCardWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? Colors.red : Colors.grey,
-                      size: 24,
-                    ),
-                    onPressed: onFavoriteToggle,
+                  Row(
+                    children: [
+                      // Tahap 1: tombol toggle local state expand/collapse
+                      IconButton(
+                        icon: Icon(
+                          isExpanded ? Icons.expand_less : Icons.expand_more,
+                        ),
+                        onPressed: () {
+                          setState(() => isExpanded = !isExpanded);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          widget.isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: widget.isFavorite ? Colors.red : Colors.grey,
+                          size: 24,
+                        ),
+                        onPressed: widget.onFavoriteToggle,
+                      ),
+                    ],
                   ),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
-                course['title'] as String,
+                widget.course['title'] as String,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -146,7 +174,8 @@ class CourseCardWidget extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '${course['credits']} SKS • Category: ${course['category']}',
+                '${widget.course['credits']} SKS • '
+                'Category: ${widget.course['category']}',
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 8),
@@ -175,6 +204,16 @@ class CourseCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
+              // Tahap 1: konten yang muncul/hilang berdasarkan local state
+              if (isExpanded) ...[
+                const SizedBox(height: 8),
+                const Divider(),
+                Text(
+                  widget.course['description'] as String? ??
+                      'Tidak ada deskripsi.',
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                ),
+              ],
             ],
           ),
         ),
