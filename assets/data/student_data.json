@@ -1,0 +1,45 @@
+{
+  "student": {
+    "name": "Achmad Dhanil Ahkam",
+    "nim": "2415051049",
+    "class": "PTI 5C",
+    "program": "Pendidikan Teknik Informatika"
+  },
+  "courses": [
+    {
+      "code": "PTI101",
+      "title": "Algoritma & Pemrograman",
+      "credits": 3,
+      "status": "done",
+      "dosen": "Dr. I Made Agus, M.T."
+    },
+    {
+      "code": "PTI102",
+      "title": "Basis Data",
+      "credits": 3,
+      "status": "done",
+      "dosen": "Ketut Agus, S.Kom., M.Cs."
+    },
+    {
+      "code": "PTI201",
+      "title": "Pemrograman Berbasis Mobile",
+      "credits": 4,
+      "status": "active",
+      "dosen": "Gede Said, S.Pd., M.Pd."
+    },
+    {
+      "code": "PTI202",
+      "title": "Rekayasa Perangkat Lunak",
+      "credits": 3,
+      "status": "active",
+      "dosen": "Nengah Widya, M.T."
+    },
+    {
+      "code": "PTI301",
+      "title": "Kecerdasan Buatan",
+      "credits": 3,
+      "status": "upcoming",
+      "dosen": "Putu Hendra, M.Kom."
+    }
+  ]
+}
